@@ -103,3 +103,12 @@ BOOL CTractionCalculationApp::InitInstance()
 	//return TRUE;
 }
 
+double NumFormat(double m_aa)
+{
+	float naa = m_aa;
+	CString str;
+	str.Format(_T("%.5f"), naa);
+	m_aa = _tstof(str.GetBuffer());
+	str.ReleaseBuffer();
+	return m_aa;
+}
