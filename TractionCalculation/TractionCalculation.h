@@ -31,4 +31,4 @@ public:
 
 extern CTractionCalculationApp theApp;
 
-double NumFormat(double m_aa);//保留三位小数
+void NumFormat(double& m_aa);//保留三位小数

@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CStartingTorque dialog
@@ -63,7 +64,7 @@ public:
 	double m_jptd;
 	double m_jpcar;
 	double m_jpcwt;
-	double c_jx;
+	double m_jx;
 	double m_j;
 	double m_eps;
 	double m_mg;
@@ -72,4 +73,16 @@ public:
 	double m_me;
 	double m_lamda;
 	CString m_result;
+	double m_qs;
+	double m_qc;
+	double m_mpcar;
+	double m_dpcar;
+	double m_mpcwt;
+	double m_dpcwt;
+	double m_mc;
+	afx_msg void OnEnChangeRe();
+	afx_msg void OnEnSetfocusRe();
+	CEdit m_ere;
+	double m_qt;
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

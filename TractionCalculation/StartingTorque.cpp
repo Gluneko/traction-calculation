@@ -48,7 +48,7 @@ CStartingTorque::CStartingTorque()
 	, m_jptd(0)
 	, m_jpcar(0)
 	, m_jpcwt(0)
-	, c_jx(0)
+	, m_jx(0)
 	, m_j(0)
 	, m_eps(0)
 	, m_mg(0)
@@ -57,7 +57,52 @@ CStartingTorque::CStartingTorque()
 	, m_me(0)
 	, m_lamda(0)
 	, m_result(_T(""))
+	, m_qs(0)
+	, m_qc(0)
+	, m_mpcar(0)
+	, m_dpcar(0)
+	, m_mpcwt(0)
+	, m_dpcwt(0)
+	, m_mc(0)
+	, m_qt(0)
 {
+	
+	
+	m_q = 1000;
+	m_p = 1300;
+	m_v = 2;
+	m_h = 125;
+	m_psi = 0.45;
+	m_gn = 9.81;
+	m_a = 1.5;
+	m_r = 2;
+	m_yita = 0.85;
+	m_i = 1;
+	m_gd2 = 4.35;
+	m_ne = 20.8;
+	m_sne = 280;
+	m_re = 35;
+	m_miu = 0.1;
+	m_dt = 760;
+	m_mt = 120;
+	m_dptd = 700;
+	m_mptd = 150;
+	m_nptd = 1;
+	m_dpcar = 410;
+	m_mpcar = 60;
+	m_npcar = 2;
+	m_dpcwt = 410;
+	m_mpcwt = 60;
+	m_npcwt = 1;
+	m_qs = 0.39;
+	m_ns = 7;
+	m_qc = 0.888;
+	m_nc = 6;
+	m_mc = 200;
+	m_qt = 0.7;
+	m_nt = 2;
+	m_ddp = 410;
+	m_mdp = 120;
 }
 
 CStartingTorque::~CStartingTorque()
@@ -137,8 +182,8 @@ void CStartingTorque::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxDouble(pDX, m_jpcar, 0, 1e+30);
 	DDX_Text(pDX, IDC_JPCWT, m_jpcwt);
 	DDV_MinMaxDouble(pDX, m_jpcwt, 0, 1e+30);
-	DDX_Text(pDX, IDC_JX, c_jx);
-	DDV_MinMaxDouble(pDX, c_jx, 0, 1e+30);
+	DDX_Text(pDX, IDC_JX, m_jx);
+	DDV_MinMaxDouble(pDX, m_jx, 0, 1e+30);
 	DDX_Text(pDX, IDC_J, m_j);
 	DDV_MinMaxDouble(pDX, m_j, 0, 1e+30);
 	DDX_Text(pDX, IDC_EPS, m_eps);
@@ -154,6 +199,23 @@ void CStartingTorque::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_LAMDA, m_lamda);
 	DDV_MinMaxDouble(pDX, m_lamda, 0, 1e+30);
 	DDX_Text(pDX, IDC_RESULT, m_result);
+	DDX_Text(pDX, IDC_QS, m_qs);
+	DDV_MinMaxDouble(pDX, m_qs, 0, 1e+30);
+	DDX_Text(pDX, IDC_QC, m_qc);
+	DDV_MinMaxDouble(pDX, m_qc, 0, 1e+30);
+	DDX_Text(pDX, IDC_MPCAR, m_mpcar);
+	DDV_MinMaxDouble(pDX, m_mpcar, 0, 1e+30);
+	DDX_Text(pDX, IDC_DPCAR, m_dpcar);
+	DDV_MinMaxDouble(pDX, m_dpcar, 0, 1e+30);
+	DDX_Text(pDX, IDC_MPCWT, m_mpcwt);
+	DDV_MinMaxDouble(pDX, m_mpcwt, 0, 1e+30);
+	DDX_Text(pDX, IDC_DPCWT, m_dpcwt);
+	DDV_MinMaxDouble(pDX, m_dpcwt, 0, 1e+30);
+	DDX_Text(pDX, IDC_MC, m_mc);
+	DDV_MinMaxDouble(pDX, m_mc, 0, 1e+30);
+	DDX_Control(pDX, IDC_RE, m_ere);
+	DDX_Text(pDX, IDC_QT, m_qt);
+	DDV_MinMaxDouble(pDX, m_qt, 0, 1e+30);
 }
 
 
@@ -161,6 +223,9 @@ BEGIN_MESSAGE_MAP(CStartingTorque, CPropertyPage)
 	ON_WM_VSCROLL()
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BTN_CALC, &CStartingTorque::OnBnClickedBtnCalc)
+	ON_EN_CHANGE(IDC_RE, &CStartingTorque::OnEnChangeRe)
+	ON_EN_SETFOCUS(IDC_RE, &CStartingTorque::OnEnSetfocusRe)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -257,7 +322,7 @@ void CStartingTorque::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 BOOL CStartingTorque::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
-
+	
 	// TODO:  Add extra initialization here
 	CRect rc;
 	GetClientRect(&rc);
@@ -270,7 +335,7 @@ BOOL CStartingTorque::OnInitDialog()
 	si.nPos = si.nMin = 1;
 
 	//si.nMax = sz.cy*m_page;
-	si.nMax = sz.cy*1.5;
+	si.nMax = sz.cy*1.8;
 	si.nMin = 0;
 	si.nPage = 300;
 	SetScrollInfo(SB_VERT, &si, FALSE);  //此函数将产生一个垂直滚动条
@@ -292,7 +357,82 @@ void CStartingTorque::OnBnClickedBtnCalc()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
-	m_n = m_p*m_v*(1 - m_psi) / (102 * m_yita);
-	
+	m_n = m_q*m_v*(1 - m_psi) / (102 * m_yita);
+	m_ms = (m_p + 1.1*m_q + m_r*m_ns*m_qs*m_h - (m_p + m_psi*m_q) - m_nc*m_qc*m_h)*m_dt / 1000 * m_gn / (2 * m_r*m_yita*m_i);
+	m_jq = m_gd2 / 4;
+	m_jt = 0.6*m_mt*pow((m_dt / 1000), 2) / 4;
+	m_jdp = 0.6*m_mdp*pow((m_dt / 1000), 2) / 4;
+	m_jptd = m_nptd*0.6*m_mptd*pow((m_dptd / 1000), 2) / (4 * m_r*m_r);
+	m_jpcar = m_npcar*0.6*m_mpcar*pow((m_dpcar / 1000), 2) / (4 * m_r*m_r);
+	m_jpcwt = m_npcwt*0.6*m_mpcwt*pow((m_dpcwt / 1000), 2) / (4 * m_r*m_r);
+	m_jx = (m_p + 1.1*m_q + m_r*m_ns*m_qs*m_h + (m_p + m_psi*m_q) + m_nc*m_qc*m_h)*pow((m_dt / 1000), 2) / (4 * m_r*m_r);
+	m_j = m_jq + m_jt + m_jdp + m_jptd + m_jpcar + m_jpcwt + m_jx;
+	m_eps = 2 * m_a*m_r / (m_dt / 1000);
+	m_mg = m_j*m_eps / m_yita;
+	m_mf = m_miu*m_re / 1000 * ((m_p + 1.1*m_q + m_r*m_ns*m_qs*m_h + (m_p + m_psi*m_q) + m_nc*m_qc*m_h+m_mc)*m_gn / m_r);
+	m_mq = m_ms + m_mf + m_mg;
+	m_me=9550 * m_ne / m_sne;
+	m_lamda = m_mq / m_me;
+	NumFormat(m_n);
+	NumFormat(m_ms);
+	NumFormat(m_jq);
+	NumFormat(m_jt);
+	NumFormat(m_jdp);
+	NumFormat(m_jptd);
+	NumFormat(m_jpcar);
+	NumFormat(m_jpcwt);
+	NumFormat(m_jx);
+	NumFormat(m_j);
+	NumFormat(m_eps);
+	NumFormat(m_mg);
+	NumFormat(m_mf);
+	NumFormat(m_me);
+	NumFormat(m_mq);
+	NumFormat(m_lamda);
+	m_result = (m_lamda >= 3 && m_lamda <= 3.5) ? "通过" : "不通过";
+	OnPaint();
 	UpdateData(FALSE);
+}
+
+
+void CStartingTorque::OnEnChangeRe()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CPropertyPage::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
+}
+
+
+void CStartingTorque::OnEnSetfocusRe()
+{
+	// TODO: Add your control notification handler code here
+	//提示气泡
+	m_ere.ShowBalloonTip(
+		_T("作者"),
+		_T("如不清楚可不填"),
+		TTI_INFO);
+}
+
+
+HBRUSH CStartingTorque::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CPropertyPage::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  Change any attributes of the DC here
+	if (IDC_RESULT == pWnd->GetDlgCtrlID())
+	{
+		if (m_result == "通过")
+		{
+			pDC->SetTextColor(RGB(0, 255, 0));
+		}
+		else if (m_result == "不通过")
+		{
+			pDC->SetTextColor(RGB(255, 0, 0));
+		}
+	}
+	// TODO:  Return a different brush if the default is not desired
+	return hbr;
 }
