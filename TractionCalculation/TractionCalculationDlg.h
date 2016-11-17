@@ -4,7 +4,7 @@
 
 #pragma once
 #include "StartingTorque.h"
-
+#include "Traction.h"
 // CTractionCalculationDlg 对话框
 class CTractionCalculationDlg : public CPropertySheet
 {
@@ -22,7 +22,7 @@ public:
 
 protected:
 	CStartingTorque m_torque;
-
+	CTraction m_traction;
 // 实现
 protected:
 	HICON m_hIcon;

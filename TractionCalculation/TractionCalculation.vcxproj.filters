@@ -18,9 +18,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TractionCalculation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TractionCalculationDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -36,6 +33,18 @@
     <ClInclude Include="StartingTorque.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TractionCalculation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Traction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompensationChain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TractionCalculation.cpp">
@@ -48,6 +57,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StartingTorque.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Traction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompensationChain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

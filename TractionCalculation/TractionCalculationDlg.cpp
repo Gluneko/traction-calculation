@@ -63,6 +63,7 @@ END_MESSAGE_MAP()
 CTractionCalculationDlg::CTractionCalculationDlg(LPCTSTR pszCaption, CWnd* pParentWnd/* = NULL*/, UINT iSelectPage/* = 0*/)
 	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
 {
+	AddPage(&m_traction);
 	AddPage(&m_torque);
 	//AddPage(&m_work);
 }
