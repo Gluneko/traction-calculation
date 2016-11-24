@@ -5,14 +5,14 @@
 #include "TractionCalculation.h"
 #include "StartingTorque.h"
 #include "afxdialogex.h"
-
+#include "TestDlg.h"
 
 // CStartingTorque dialog
 
-IMPLEMENT_DYNAMIC(CStartingTorque, CPropertyPage)
+IMPLEMENT_DYNAMIC(CStartingTorque, CDialogEx)
 
-CStartingTorque::CStartingTorque()
-	: CPropertyPage(CStartingTorque::IDD)
+CStartingTorque::CStartingTorque(CWnd* pParent /*=NULL*/)
+: CDialogEx(CStartingTorque::IDD, pParent)
 	, m_q(0)
 	, m_p(0)
 	, m_v(0)
@@ -111,7 +111,7 @@ CStartingTorque::~CStartingTorque()
 
 void CStartingTorque::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
+	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_Q, m_q);
 	DDV_MinMaxDouble(pDX, m_q, 0, 1e+30);
 	DDX_Text(pDX, IDC_P, m_p);
@@ -219,13 +219,14 @@ void CStartingTorque::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CStartingTorque, CPropertyPage)
+BEGIN_MESSAGE_MAP(CStartingTorque, CDialogEx)
 	ON_WM_VSCROLL()
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BTN_CALC, &CStartingTorque::OnBnClickedBtnCalc)
 	ON_EN_CHANGE(IDC_RE, &CStartingTorque::OnEnChangeRe)
 	ON_EN_SETFOCUS(IDC_RE, &CStartingTorque::OnEnSetfocusRe)
 	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_BUTTON1, &CStartingTorque::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -315,13 +316,13 @@ void CStartingTorque::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	// TODO: Add your message handler code here and/or call default
 	
 	VScrool(SB_VERT, nSBCode);
-	CPropertyPage::OnVScroll(nSBCode, nPos, pScrollBar);
+	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
 
 BOOL CStartingTorque::OnInitDialog()
 {
-	CPropertyPage::OnInitDialog();
+	CDialogEx::OnInitDialog();
 	
 	// TODO:  Add extra initialization here
 	CRect rc;
@@ -347,7 +348,7 @@ BOOL CStartingTorque::OnInitDialog()
 
 void CStartingTorque::OnSize(UINT nType, int cx, int cy)
 {
-	CPropertyPage::OnSize(nType, cx, cy);
+	CDialogEx::OnSize(nType, cx, cy);
 
 	// TODO: Add your message handler code here
 }
@@ -398,7 +399,7 @@ void CStartingTorque::OnBnClickedBtnCalc()
 void CStartingTorque::OnEnChangeRe()
 {
 	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CPropertyPage::OnInitDialog()
+	// send this notification unless you override the CDialogEx::OnInitDialog()
 	// function and call CRichEditCtrl().SetEventMask()
 	// with the ENM_CHANGE flag ORed into the mask.
 
@@ -419,7 +420,7 @@ void CStartingTorque::OnEnSetfocusRe()
 
 HBRUSH CStartingTorque::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	HBRUSH hbr = CPropertyPage::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  Change any attributes of the DC here
 	if (IDC_RESULT == pWnd->GetDlgCtrlID())
@@ -435,4 +436,12 @@ HBRUSH CStartingTorque::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 	// TODO:  Return a different brush if the default is not desired
 	return hbr;
+}
+
+
+void CStartingTorque::OnBnClickedButton1()
+{
+	// TODO: Add your control notification handler code here
+	CTestDlg dlg;
+	dlg.DoModal();
 }

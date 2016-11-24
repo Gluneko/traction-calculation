@@ -36,13 +36,13 @@
     <ClInclude Include="TractionCalculation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Traction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CompensationChain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Traction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,13 +59,13 @@
     <ClCompile Include="StartingTorque.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Traction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CompensationChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Traction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

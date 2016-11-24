@@ -4,12 +4,12 @@
 
 // CStartingTorque dialog
 
-class CStartingTorque : public CPropertyPage
+class CStartingTorque : public CDialogEx
 {
 	DECLARE_DYNAMIC(CStartingTorque)
 
 public:
-	CStartingTorque();
+	CStartingTorque(CWnd* pParent = NULL);
 	virtual ~CStartingTorque();
 
 //	int m_page;
@@ -85,4 +85,5 @@ public:
 	CEdit m_ere;
 	double m_qt;
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnBnClickedButton1();
 };

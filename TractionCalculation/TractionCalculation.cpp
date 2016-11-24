@@ -69,10 +69,8 @@ BOOL CTractionCalculationApp::InitInstance()
 	// TODO:  应适当修改该字符串，
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
-
-	//CTractionCalculationDlg dlg;
-	CTractionCalculationDlg dlg(_T("曳引力计算"));
-	//dlg.DoModal();
+	//CTractionCalculationDlg dlg(_T("曳引力计算"));
+	CTractionCalculationDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

@@ -9,60 +9,37 @@
 
 // CTraction dialog
 
-IMPLEMENT_DYNAMIC(CTraction, CPropertyPage)
+IMPLEMENT_DYNAMIC(CTraction, CDialogEx)
 
-CTraction::CTraction()
-	: CPropertyPage(CTraction::IDD)
+CTraction::CTraction(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CTraction::IDD, pParent)
 {
-	
+
 }
 
 CTraction::~CTraction()
 {
-	
 }
 
 void CTraction::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertyPage::DoDataExchange(pDX);
+	CDialogEx::DoDataExchange(pDX);
 }
 
 
-BEGIN_MESSAGE_MAP(CTraction, CPropertyPage)
-	ON_EN_SETFOCUS(IDC_QC, &CTraction::OnEnSetfocusQc)
-	ON_BN_CLICKED(IDC_BTN_CALC, &CTraction::OnBnClickedBtnCalc)
-	ON_EN_CHANGE(IDC_EDIT19, &CTraction::OnEnChangeEdit19)
+BEGIN_MESSAGE_MAP(CTraction, CDialogEx)
+	ON_BN_CLICKED(IDC_BUTTON1, &CTraction::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
 // CTraction message handlers
 
 
-void CTraction::OnEnSetfocusQc()
+void CTraction::OnBnClickedButton1()
 {
 	// TODO: Add your control notification handler code here
-	//CCompensationChain dlg(this);
-	//CCompensationChain dlg;
-	//dlg.DoModal();
+	/*CCompensationChain dlg;
+	dlg.DoModal();*/
 	CTestDlg dlg;
-	dlg.doModal();
-}
-
-
-void CTraction::OnBnClickedBtnCalc()
-{
-	// TODO: Add your control notification handler code here
-	//CCompensationChain dlg;
-	//dlg.DoModal();
-}
-
-
-void CTraction::OnEnChangeEdit19()
-{
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CPropertyPage::OnInitDialog()
-	// function and call CRichEditCtrl().SetEventMask()
-	// with the ENM_CHANGE flag ORed into the mask.
-
-	// TODO:  Add your control notification handler code here
+	dlg.DoModal();
 }

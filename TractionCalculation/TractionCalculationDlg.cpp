@@ -47,11 +47,11 @@ END_MESSAGE_MAP()
 
 
 
-//CTractionCalculationDlg::CTractionCalculationDlg(CWnd* pParent /*=NULL*/)
-//	: CDialogEx(CTractionCalculationDlg::IDD, pParent)
-//{
-//	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-//}
+CTractionCalculationDlg::CTractionCalculationDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CTractionCalculationDlg::IDD, pParent)
+{
+	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
 
 //CTractionCalculationDlg::CTractionCalculationDlg(UINT nIDCaption, CWnd* pParentWnd/* = NULL*/, UINT iSelectPage/* = 0*/)
 //	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
@@ -60,23 +60,25 @@ END_MESSAGE_MAP()
 //	//AddPage(&m_work);
 //}
 
-CTractionCalculationDlg::CTractionCalculationDlg(LPCTSTR pszCaption, CWnd* pParentWnd/* = NULL*/, UINT iSelectPage/* = 0*/)
-	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
-{
-	AddPage(&m_traction);
-	AddPage(&m_torque);
-	//AddPage(&m_work);
-}
+//CTractionCalculationDlg::CTractionCalculationDlg(LPCTSTR pszCaption, CWnd* pParentWnd/* = NULL*/, UINT iSelectPage/* = 0*/)
+//	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
+//{
+//	AddPage(&m_traction);
+//	AddPage(&m_torque);
+//	//AddPage(&m_work);
+//}
 
 void CTractionCalculationDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CPropertySheet::DoDataExchange(pDX);
+	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_TAB1, m_tabCtl);
 }
 
-BEGIN_MESSAGE_MAP(CTractionCalculationDlg, CPropertySheet)
+BEGIN_MESSAGE_MAP(CTractionCalculationDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
-	//ON_WM_PAINT()
-	//ON_WM_QUERYDRAGICON()
+	ON_WM_PAINT()
+	ON_WM_QUERYDRAGICON()
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CTractionCalculationDlg::OnTcnSelchangeTab1)
 END_MESSAGE_MAP()
 
 
@@ -84,7 +86,7 @@ END_MESSAGE_MAP()
 
 BOOL CTractionCalculationDlg::OnInitDialog()
 {
-	CPropertySheet::OnInitDialog();
+	CDialogEx::OnInitDialog();
 
 	// 将“关于...”菜单项添加到系统菜单中。
 
@@ -112,8 +114,35 @@ BOOL CTractionCalculationDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
+	//添加选项卡名称
+	m_tabCtl.InsertItem(0, L"曳引力计算");
+	m_tabCtl.InsertItem(1, L"曳引力启动转矩");
 
-	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+	//设置IDC_TAB1为父窗口
+	m_page1.Create(IDD_TRACTION2, GetDlgItem(IDC_TAB1));
+	m_page2.Create(IDD_TORQUE, GetDlgItem(IDC_TAB1));
+
+	//获得IDC_TABTEST客户区大小
+	CRect rc;
+	m_tabCtl.GetClientRect(&rc);
+
+	//调整子对话框在父窗口中的位置
+	rc.top += 30;
+	rc.bottom -= 8;
+	rc.left += 8;
+	rc.right -= 8;
+
+	//设置子对话框尺寸并移动到指定位置
+	m_page1.MoveWindow(&rc);
+	m_page2.MoveWindow(&rc);
+
+	//分别设置隐藏和显示
+	m_page1.ShowWindow(true);
+	m_page2.ShowWindow(false);
+
+	//设置默认的选项卡
+	m_tabCtl.SetCurSel(0);
+	return FALSE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
 void CTractionCalculationDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -125,7 +154,7 @@ void CTractionCalculationDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 	else
 	{
-		CPropertySheet::OnSysCommand(nID, lParam);
+		CDialogEx::OnSysCommand(nID, lParam);
 	}
 }
 
@@ -133,35 +162,55 @@ void CTractionCalculationDlg::OnSysCommand(UINT nID, LPARAM lParam)
 //  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
 
-//void CTractionCalculationDlg::OnPaint()
-//{
-//	if (IsIconic())
-//	{
-//		CPaintDC dc(this); // 用于绘制的设备上下文
-//
-//		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
-//
-//		// 使图标在工作区矩形中居中
-//		int cxIcon = GetSystemMetrics(SM_CXICON);
-//		int cyIcon = GetSystemMetrics(SM_CYICON);
-//		CRect rect;
-//		GetClientRect(&rect);
-//		int x = (rect.Width() - cxIcon + 1) / 2;
-//		int y = (rect.Height() - cyIcon + 1) / 2;
-//
-//		// 绘制图标
-//		dc.DrawIcon(x, y, m_hIcon);
-//	}
-//	else
-//	{
-//		CDialogEx::OnPaint();
-//	}
-//}
-//
-////当用户拖动最小化窗口时系统调用此函数取得光标
-////显示。
-//HCURSOR CTractionCalculationDlg::OnQueryDragIcon()
-//{
-//	return static_cast<HCURSOR>(m_hIcon);
-//}
+void CTractionCalculationDlg::OnPaint()
+{
+	if (IsIconic())
+	{
+		CPaintDC dc(this); // 用于绘制的设备上下文
 
+		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+
+		// 使图标在工作区矩形中居中
+		int cxIcon = GetSystemMetrics(SM_CXICON);
+		int cyIcon = GetSystemMetrics(SM_CYICON);
+		CRect rect;
+		GetClientRect(&rect);
+		int x = (rect.Width() - cxIcon + 1) / 2;
+		int y = (rect.Height() - cyIcon + 1) / 2;
+
+		// 绘制图标
+		dc.DrawIcon(x, y, m_hIcon);
+	}
+	else
+	{
+		CDialogEx::OnPaint();
+	}
+}
+
+//当用户拖动最小化窗口时系统调用此函数取得光标
+//显示。
+HCURSOR CTractionCalculationDlg::OnQueryDragIcon()
+{
+	return static_cast<HCURSOR>(m_hIcon);
+}
+
+
+
+void CTractionCalculationDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: Add your control notification handler code here
+	int CurSel = m_tabCtl.GetCurSel();
+
+	switch (CurSel)
+	{
+	case 0:
+		m_page1.ShowWindow(true);
+		m_page2.ShowWindow(false);
+		break;
+	case 1:
+		m_page1.ShowWindow(false);
+		m_page2.ShowWindow(true);
+		break;
+	}
+	*pResult = 0;
+}

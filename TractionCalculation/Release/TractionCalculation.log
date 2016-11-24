@@ -1,19 +1,22 @@
-﻿Build started 2016/11/17 16:18:20.
+﻿Build started 2016/11/24 11:22:44.
      1>Project "E:\projects\TractionCalculation\TractionCalculation\TractionCalculation.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\TractionCalculation.pch" /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt CompensationChain.cpp StartingTorque.cpp TestDlg.cpp Traction.cpp TractionCalculation.cpp TractionCalculationDlg.cpp
-         CompensationChain.cpp
-         StartingTorque.cpp
-     1>StartingTorque.cpp(338): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-         TestDlg.cpp
-         Traction.cpp
-     1>Traction.cpp(48): error C2039: 'doModal' : is not a member of 'CTestDlg'
-                 e:\projects\tractioncalculation\tractioncalculation\TestDlg.h(6) : see declaration of 'CTestDlg'
-         TractionCalculation.cpp
-     1>TractionCalculation.cpp(108): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-         TractionCalculationDlg.cpp
-     1>Done Building Project "E:\projects\TractionCalculation\TractionCalculation\TractionCalculation.vcxproj" (Build target(s)) -- FAILED.
+     1>ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D NDEBUG /D _UNICODE /D UNICODE /l"0x0804" /IRelease\ /nologo /fo"Release\TractionCalculation.res" TractionCalculation.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\projects\TractionCalculation\Release\TractionCalculation.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"E:\projects\TractionCalculation\Release\TractionCalculation.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\projects\TractionCalculation\Release\TractionCalculation.lib" /MACHINE:X86 /SAFESEH Release\TractionCalculation.res
+         Release\CompensationChain.obj
+         Release\StartingTorque.obj
+         Release\stdafx.obj
+         Release\TestDlg.obj
+         Release\Traction.obj
+         Release\TractionCalculation.obj
+         Release\TractionCalculationDlg.obj
+         Release\TractionProp.obj
+         Generating code
+         Finished generating code
+         TractionCalculation.vcxproj -> E:\projects\TractionCalculation\Release\TractionCalculation.exe
+     1>Done Building Project "E:\projects\TractionCalculation\TractionCalculation\TractionCalculation.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:01:01.85
+Time Elapsed 00:00:24.26

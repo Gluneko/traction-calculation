@@ -3,23 +3,21 @@
 #include "TestDlg.h"
 // CTraction dialog
 
-class CTraction : public CPropertyPage
+class CTraction : public CDialogEx
 {
 	DECLARE_DYNAMIC(CTraction)
 
 public:
-	CTraction();
+	CTraction(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CTraction();
 
 // Dialog Data
 	enum { IDD = IDD_TRACTION2 };
-	CCompensationChain dlg;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnEnSetfocusQc();
-	afx_msg void OnBnClickedBtnCalc();
-	afx_msg void OnEnChangeEdit19();
+	afx_msg void OnBnClickedButton1();
 };
