@@ -13,6 +13,12 @@ IMPLEMENT_DYNAMIC(CTraction, CDialogEx)
 
 CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CTraction::IDD, pParent)
+	, m_q(0)
+	, m_p(0)
+	, m_v(0)
+	, m_h(0)
+	, m_psi(0)
+	, m_gn(0)
 {
 
 }
@@ -24,6 +30,18 @@ CTraction::~CTraction()
 void CTraction::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_Q, m_q);
+	DDV_MinMaxDouble(pDX, m_q, 0, 1e+30);
+	DDX_Text(pDX, IDC_P, m_p);
+	DDV_MinMaxDouble(pDX, m_p, 0, 1e+30);
+	DDX_Text(pDX, IDC_V, m_v);
+	DDV_MinMaxDouble(pDX, m_v, 0, 1e+30);
+	DDX_Text(pDX, IDC_H, m_h);
+	DDV_MinMaxDouble(pDX, m_h, 0, 1e+30);
+	DDX_Text(pDX, IDC_PSI, m_psi);
+	DDV_MinMaxDouble(pDX, m_psi, 0, 1);
+	DDX_Text(pDX, IDC_GN, m_gn);
+	DDV_MinMaxDouble(pDX, m_gn, 0, 1e+30);
 }
 
 

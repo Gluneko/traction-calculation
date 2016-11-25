@@ -20,4 +20,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
+	double m_q;
+	double m_p;
+	double m_v;
+	double m_h;
+	double m_psi;
+	double m_gn;
 };
