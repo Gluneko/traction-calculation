@@ -26,4 +26,15 @@ public:
 	double m_h;
 	double m_psi;
 	double m_gn;
+	double m_a;
+	double m_r;
+	double m_qs;
+	double m_dr;
+	int m_ns;
+	double m_qc;
+	int m_nc;
+	double m_mc;
+	double m_qtcwt;
+	double m_qt;
+	int m_nt;
 };
