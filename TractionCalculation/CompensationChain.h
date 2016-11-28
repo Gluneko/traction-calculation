@@ -14,7 +14,7 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_COMPENSATION_CHAIN };
-	//vector<pair<CString, double>> vec;
+	vector<pair<CString, double>> vec;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -22,5 +22,8 @@ protected:
 public:
 //	virtual BOOL OnInitDialog();
 	CListCtrl m_ctllist;
+	CString qc;
 	virtual BOOL OnInitDialog();
+	afx_msg void OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult);
+	virtual void OnOK();
 };

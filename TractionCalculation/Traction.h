@@ -1,6 +1,7 @@
 #pragma once
 #include "CompensationChain.h"
 #include "TestDlg.h"
+#include "afxwin.h"
 // CTraction dialog
 
 class CTraction : public CDialogEx
@@ -10,7 +11,9 @@ class CTraction : public CDialogEx
 public:
 	CTraction(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CTraction();
-
+	int GetScrollPos(int nBar, UINT nSBCode);
+	void ScrollClient(int nBar, int nPos);
+	void VScrool(int nBar, UINT nSBCode);
 // Dialog Data
 	enum { IDD = IDD_TRACTION2 };
 
@@ -37,4 +40,24 @@ public:
 	double m_qtcwt;
 	double m_qt;
 	int m_nt;
+	double m_alpha;
+	/*afx_msg void OnEnChangeQc();
+	afx_msg void OnEnSetfocusQc();*/
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	virtual BOOL OnInitDialog();
+	CComboBox m_scType;
+	afx_msg void OnCbnSelchangeSctype();
+	virtual void OnOK();
+	afx_msg void OnBnClickedQc();
+	afx_msg void OnBnClickedAlpha();
+	//包角计算对话框的数据
+	BOOL m_w_radio;
+	double m_w_dt;
+	double m_w_ddp;
+	double m_w_la;
+	double m_w_h1;
+	double m_w_alpha2;
+	CString m_w_way;
+	CComboBox m_pro;
 };

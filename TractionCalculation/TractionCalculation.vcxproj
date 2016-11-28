@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CompensationChain.h" />
+    <ClInclude Include="Groove.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StartingTorque.h" />
     <ClInclude Include="stdafx.h" />
@@ -110,9 +111,11 @@
     <ClInclude Include="Traction.h" />
     <ClInclude Include="TractionCalculation.h" />
     <ClInclude Include="TractionCalculationDlg.h" />
+    <ClInclude Include="WrapAngle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CompensationChain.cpp" />
+    <ClCompile Include="Groove.cpp" />
     <ClCompile Include="StartingTorque.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -122,6 +125,7 @@
     <ClCompile Include="Traction.cpp" />
     <ClCompile Include="TractionCalculation.cpp" />
     <ClCompile Include="TractionCalculationDlg.cpp" />
+    <ClCompile Include="WrapAngle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TractionCalculation.rc" />
@@ -130,6 +134,8 @@
     <None Include="res\TractionCalculation.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="C:\Users\zengtian\Desktop\微信截图_20161128111855.png" />
+    <Image Include="C:\Users\zengtian\Pictures\alpha.bmp" />
     <Image Include="res\TractionCalculation.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

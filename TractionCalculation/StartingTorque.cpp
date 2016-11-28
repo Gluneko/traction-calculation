@@ -336,7 +336,7 @@ BOOL CStartingTorque::OnInitDialog()
 	si.nPos = si.nMin = 1;
 
 	//si.nMax = sz.cy*m_page;
-	si.nMax = sz.cy*1.8;
+	si.nMax = sz.cy;
 	si.nMin = 0;
 	si.nPage = 300;
 	SetScrollInfo(SB_VERT, &si, FALSE);  //此函数将产生一个垂直滚动条

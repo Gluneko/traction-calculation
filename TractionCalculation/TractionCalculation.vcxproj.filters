@@ -45,6 +45,12 @@
     <ClInclude Include="Traction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WrapAngle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Groove.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TractionCalculation.cpp">
@@ -68,6 +74,12 @@
     <ClCompile Include="Traction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WrapAngle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Groove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TractionCalculation.rc">
@@ -81,6 +93,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\TractionCalculation.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\Users\zengtian\Desktop\微信截图_20161128111855.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\Users\zengtian\Pictures\alpha.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
