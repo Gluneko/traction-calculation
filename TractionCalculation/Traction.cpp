@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 #include "CompensationChain.h"
 #include "WrapAngle.h"
-
+#include "Groove.h"
 // CTraction dialog
 
 IMPLEMENT_DYNAMIC(CTraction, CDialogEx)
@@ -32,6 +32,11 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	, m_qt(0)
 	, m_nt(0)
 	, m_alpha(0)
+	, m_beta(0)
+	, m_gama(0)
+	, m_miu1(0)
+	, m_miu2(0)
+	, m_miu3(0)
 {
 	m_w_radio=0;
 	m_w_dt = 410;
@@ -40,6 +45,7 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	m_w_h1=702;
 	m_w_alpha2=m_alpha*pi/180;
 	m_w_way = "单绕";
+	strWeb = "半圆槽";
 }
 
 CTraction::~CTraction()
@@ -83,6 +89,12 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_nt, 0, 2147483647);
 	DDX_Control(pDX, IDC_SCTYPE, m_scType);
 	DDX_Control(pDX, IDC_PRO, m_pro);
+	DDX_Text(pDX, IDC_MIU1, m_miu1);
+	DDV_MinMaxDouble(pDX, m_miu1, 0, 1e+30);
+	DDX_Text(pDX, IDC_MIU2, m_miu2);
+	DDV_MinMaxDouble(pDX, m_miu2, 0, 1e+30);
+	DDX_Text(pDX, IDC_MIU3, m_miu3);
+	DDV_MinMaxDouble(pDX, m_miu3, 0, 1e+30);
 }
 
 
@@ -93,6 +105,8 @@ BEGIN_MESSAGE_MAP(CTraction, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_SCTYPE, &CTraction::OnCbnSelchangeSctype)
 	ON_BN_CLICKED(IDC_QC, &CTraction::OnBnClickedQc)
 	ON_BN_CLICKED(IDC_ALPHA, &CTraction::OnBnClickedAlpha)
+	ON_BN_CLICKED(IDC_BETA, &CTraction::OnBnClickedBeta)
+	ON_BN_CLICKED(IDC_GAMA, &CTraction::OnBnClickedGama)
 END_MESSAGE_MAP()
 
 
@@ -262,7 +276,7 @@ void CTraction::OnSize(UINT nType, int cx, int cy)
 void CTraction::OnCbnSelchangeSctype()
 {
 	// TODO: Add your control notification handler code here
-	CString strWeb;
+	
 	int nSel;
 
 	// 获取组合框控件的列表框中选中项的索引   
@@ -313,5 +327,33 @@ void CTraction::OnBnClickedAlpha()
 		m_w_h1 = dlg.m_h1;
 		m_w_alpha2 = dlg.m_alpha2;
 		m_w_way = dlg.strWay;
+	}
+}
+
+
+void CTraction::OnBnClickedBeta()
+{
+	// TODO: Add your control notification handler code here
+	CGroove dlg(strWeb);
+	if (IDOK == dlg.DoModal())
+	{
+		SetDlgItemText(IDC_BETA, dlg.beta);
+		m_beta = _tstof(dlg.beta.GetBuffer());
+		SetDlgItemText(IDC_GAMA, dlg.gama);
+		m_beta = _tstof(dlg.gama.GetBuffer());
+	}
+}
+
+
+void CTraction::OnBnClickedGama()
+{
+	// TODO: Add your control notification handler code here
+	CGroove dlg(strWeb);
+	if (IDOK == dlg.DoModal())
+	{
+		SetDlgItemText(IDC_BETA, dlg.beta);
+		m_beta = _tstof(dlg.beta.GetBuffer());
+		SetDlgItemText(IDC_GAMA, dlg.gama);
+		m_beta = _tstof(dlg.gama.GetBuffer());
 	}
 }

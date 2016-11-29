@@ -76,10 +76,10 @@ BOOL CCompensationChain::OnInitDialog()
 	m_ctllist.InsertColumn(2, _T(""), LVCFMT_CENTER, rect.Width() / 3, 2);
 	for (st i = 0; i<vec.size(); ++i)
 	{
-		m_ctllist.InsertItem(0, vec[i].first);
+		m_ctllist.InsertItem(i, vec[i].first);
 		str.Format(_T("%.2f"), vec[i].second);
-		m_ctllist.SetItemText(0, 1, str);
-		m_ctllist.SetItemText(0, 2, _T("kg/m"));
+		m_ctllist.SetItemText(i, 1, str);
+		m_ctllist.SetItemText(i, 2, _T("kg/m"));
 	}
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

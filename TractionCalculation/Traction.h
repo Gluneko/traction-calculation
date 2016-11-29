@@ -60,4 +60,12 @@ public:
 	double m_w_alpha2;
 	CString m_w_way;
 	CComboBox m_pro;
+	afx_msg void OnBnClickedBeta();
+	double m_beta;
+	double m_gama;
+	afx_msg void OnBnClickedGama();
+	CString strWeb;
+	double m_miu1;
+	double m_miu2;
+	double m_miu3;
 };
