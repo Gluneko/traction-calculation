@@ -102,8 +102,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CompensationChain.h" />
+    <ClInclude Include="Diameter.h" />
     <ClInclude Include="Groove.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SafetyFactor.h" />
     <ClInclude Include="StartingTorque.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -115,7 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CompensationChain.cpp" />
+    <ClCompile Include="Diameter.cpp" />
     <ClCompile Include="Groove.cpp" />
+    <ClCompile Include="SafetyFactor.cpp" />
     <ClCompile Include="StartingTorque.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -136,6 +140,10 @@
   <ItemGroup>
     <Image Include="C:\Users\zengtian\Desktop\微信截图_20161128111855.png" />
     <Image Include="C:\Users\zengtian\Pictures\alpha.bmp" />
+    <Image Include="c:\users\zengtian\pictures\bitmap3.bmp" />
+    <Image Include="C:\Users\zengtian\Pictures\微信截图_20161130110339.bmp" />
+    <Image Include="C:\Users\zengtian\Pictures\微信截图_20161130110417.bmp" />
+    <Image Include="C:\Users\zengtian\Pictures\微信截图_20161130110451.bmp" />
     <Image Include="res\TractionCalculation.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

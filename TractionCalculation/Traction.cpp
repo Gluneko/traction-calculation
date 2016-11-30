@@ -37,6 +37,31 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	, m_miu1(0)
 	, m_miu2(0)
 	, m_miu3(0)
+	, m_f1(0)
+	, m_f2(0)
+	, m_f3(0)
+	, m_ef1(0)
+	, m_ef2(0)
+	, m_ef3(0)
+	, m_mdp(0)
+	, m_mmdp(0)
+	, m_npcar(0)
+	, m_mpcar(0)
+	, m_mmpcar(0)
+	, m_npcwt(0)
+	, m_mpcwt(0)
+	, m_mmpcwt(0)
+	, m_nptd(0)
+	, m_mptd(0)
+	, m_mmptd(0)
+	, m_ddr(0)
+	, m_dtdr(0)
+	, m_sf(0)
+	, m_sa(0)
+	, m_pp(0)
+	, m_rope(0)
+	, m_chain(0)
+	, m_cable(0)
 {
 	m_w_radio=0;
 	m_w_dt = 410;
@@ -46,6 +71,9 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	m_w_alpha2=m_alpha*pi/180;
 	m_w_way = "单绕";
 	strWeb = "半圆槽";
+	strPro = "硬化处理";
+	strPos = "对重侧";
+	strSel = "轿厢侧";
 }
 
 CTraction::~CTraction()
@@ -74,8 +102,10 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_QS, m_qs);
 	DDV_MinMaxDouble(pDX, m_qs, 0, 1e+30);
 	DDX_Text(pDX, IDC_DR, m_dr);
+	DDX_Text(pDX, IDC_DR2, m_dr);
 	DDV_MinMaxDouble(pDX, m_dr, 0, 1e+30);
 	DDX_Text(pDX, IDC_NS, m_ns);
+	DDX_Text(pDX, IDC_NS2, m_ns);
 	DDV_MinMaxInt(pDX, m_ns, 0, 2147483647);
 	DDX_Text(pDX, IDC_NC, m_nc);
 	DDV_MinMaxInt(pDX, m_nc, 0, 2147483647);
@@ -95,6 +125,42 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxDouble(pDX, m_miu2, 0, 1e+30);
 	DDX_Text(pDX, IDC_MIU3, m_miu3);
 	DDV_MinMaxDouble(pDX, m_miu3, 0, 1e+30);
+	DDX_Text(pDX, IDC_F1, m_f1);
+	DDX_Text(pDX, IDC_F2, m_f2);
+	DDX_Text(pDX, IDC_F3, m_f3);
+	DDX_Text(pDX, IDC_EF1, m_ef1);
+	DDX_Text(pDX, IDC_EF2, m_ef2);
+	DDX_Text(pDX, IDC_EF3, m_ef3);
+	DDX_Control(pDX, IDC_POS, m_pos);
+	DDX_Text(pDX, IDC_MDP, m_mdp);
+	DDV_MinMaxDouble(pDX, m_mdp, 0, 1e+30);
+	DDX_Text(pDX, IDC_MMDP, m_mmdp);
+	DDX_Text(pDX, IDC_NPCAR, m_npcar);
+	DDV_MinMaxInt(pDX, m_npcar, 0, 2147483647);
+	DDX_Text(pDX, IDC_MPCAR, m_mpcar);
+	DDV_MinMaxDouble(pDX, m_mpcar, 0, 1e+30);
+	DDX_Text(pDX, IDC_MPCAR2, m_mmpcar);
+	DDX_Text(pDX, IDC_NPCWT, m_npcwt);
+	DDV_MinMaxInt(pDX, m_npcwt, 0, 2147483647);
+	DDX_Text(pDX, IDC_MPCWT, m_mpcwt);
+	DDV_MinMaxDouble(pDX, m_mpcwt, 0, 1e+30);
+	DDX_Text(pDX, IDC_MPCWT2, m_mmpcwt);
+	DDX_Text(pDX, IDC_NPTD, m_nptd);
+	DDV_MinMaxInt(pDX, m_nptd, 0, 2147483647);
+	DDX_Text(pDX, IDC_MPTD2, m_mptd);
+	DDV_MinMaxDouble(pDX, m_mptd, 0, 1e+30);
+	DDX_Text(pDX, IDC_MPTD, m_mmptd);
+	DDX_Control(pDX, IDC_SEL_POS, m_sel);
+	DDX_Control(pDX, IDC_SA, m_esa);
+	DDX_Text(pDX, IDC_DR3, m_ddr);
+	DDV_MinMaxDouble(pDX, m_ddr, 0, 1e+30);
+	DDX_Text(pDX, IDC_DTDR, m_dtdr);
+	DDX_Text(pDX, IDC_SF, m_sf);
+	DDX_Text(pDX, IDC_SA, m_sa);
+	DDX_Text(pDX, IDC_P2, m_pp);
+	DDX_Text(pDX, IDC_ROPE, m_rope);
+	DDX_Text(pDX, IDC_CHAIN, m_chain);
+	DDX_Text(pDX, IDC_CABLE, m_cable);
 }
 
 
@@ -107,6 +173,12 @@ BEGIN_MESSAGE_MAP(CTraction, CDialogEx)
 	ON_BN_CLICKED(IDC_ALPHA, &CTraction::OnBnClickedAlpha)
 	ON_BN_CLICKED(IDC_BETA, &CTraction::OnBnClickedBeta)
 	ON_BN_CLICKED(IDC_GAMA, &CTraction::OnBnClickedGama)
+	ON_BN_CLICKED(IDC_BTN_CALC, &CTraction::OnBnClickedBtnCalc)
+	ON_CBN_SELCHANGE(IDC_PRO, &CTraction::OnCbnSelchangePro)
+	ON_CBN_SELCHANGE(IDC_POS, &CTraction::OnCbnSelchangePos)
+	ON_CBN_SELCHANGE(IDC_SEL_POS, &CTraction::OnCbnSelchangeSelPos)
+	ON_EN_SETFOCUS(IDC_SA, &CTraction::OnEnSetfocusSa)
+	ON_BN_CLICKED(IDC_NE, &CTraction::OnBnClickedNe)
 END_MESSAGE_MAP()
 
 
@@ -261,6 +333,12 @@ BOOL CTraction::OnInitDialog()
 	m_pro.AddString(_T("硬化处理"));
 	m_pro.AddString(_T("未经硬化"));
 	m_pro.SetCurSel(0);
+	m_pos.AddString(_T("轿厢侧"));
+	m_pos.AddString(_T("对重侧"));
+	m_pos.SetCurSel(0);
+	m_sel.AddString(_T("轿厢侧"));
+	m_sel.AddString(_T("对重侧"));
+	m_sel.SetCurSel(0);
 	//SetDlgItemText(IDC_SCTYPE, _T("半圆槽"));
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -356,4 +434,98 @@ void CTraction::OnBnClickedGama()
 		SetDlgItemText(IDC_GAMA, dlg.gama);
 		m_beta = _tstof(dlg.gama.GetBuffer());
 	}
+}
+
+
+void CTraction::OnBnClickedBtnCalc()
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+	double r_beta = m_beta / pi * 180;
+	double r_gama = m_gama / pi * 180;
+	double r_alpha = m_alpha / pi * 180;
+	m_miu2 = 0.1 / (1+m_r*m_v/10);
+	if (strWeb == "半圆槽")
+	{
+		m_f1 = m_miu1 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi-r_beta-r_gama-sin(r_beta)+sin(r_gama));
+		m_f2 = m_miu2 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
+		m_f3 = m_miu3 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
+	}
+	else if (strWeb == "V形槽")
+	{
+		m_f1 = (strPro == "硬化处理") ? (m_miu1 / sin(r_gama / 2)) : 4 * m_miu1*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+		m_f2 = (strPro == "硬化处理") ? (m_miu2 / sin(r_gama / 2)) : 4 * m_miu2*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+		m_f3 = (strPro == "硬化处理") ? (m_miu3 / sin(r_gama / 2)) : 4 * m_miu3*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+	}
+	else
+	{
+		m_f1 = 0;
+		m_f1 = 0;
+		m_f1 = 0;
+	}
+	m_ef1 = exp(m_f1*r_alpha);
+	m_ef2 = exp(m_f2*r_alpha);
+	m_ef3 = exp(m_f3*r_alpha);
+	m_mmdp = 0.6*m_mdp;
+	m_mmpcar = m_npcar*0.6*m_mpcar;
+	m_mmpcwt = m_npcwt*0.6*m_mpcwt;
+	m_mmptd = m_nptd*0.6*m_mptd;
+
+	OnPaint();
+	UpdateData(FALSE);
+}
+
+
+void CTraction::OnCbnSelchangePro()
+{
+	// TODO: Add your control notification handler code here
+	int nSel;
+
+	// 获取组合框控件的列表框中选中项的索引   
+	nSel = m_scType.GetCurSel();
+	// 根据选中项索引获取该项字符串   
+	m_pro.GetLBText(nSel, strPro);
+}
+
+
+void CTraction::OnCbnSelchangePos()
+{
+	// TODO: Add your control notification handler code here
+	int nSel;
+
+	// 获取组合框控件的列表框中选中项的索引   
+	nSel = m_scType.GetCurSel();
+	// 根据选中项索引获取该项字符串   
+	m_pos.GetLBText(nSel, strPos);
+}
+
+
+
+void CTraction::OnCbnSelchangeSelPos()
+{
+	// TODO: Add your control notification handler code here
+	int nSel;
+
+	// 获取组合框控件的列表框中选中项的索引   
+	nSel = m_scType.GetCurSel();
+	// 根据选中项索引获取该项字符串   
+	m_sel.GetLBText(nSel, strSel);
+}
+
+
+void CTraction::OnEnSetfocusSa()
+{
+	// TODO: Add your control notification handler code here
+	//提示气泡
+	m_esa.ShowBalloonTip(
+		_T("USER"),
+		_T("见7588的9.2.2，只计算4.1"),
+		TTI_INFO);
+	
+}
+
+
+void CTraction::OnBnClickedNe()
+{
+	// TODO: Add your control notification handler code here
 }

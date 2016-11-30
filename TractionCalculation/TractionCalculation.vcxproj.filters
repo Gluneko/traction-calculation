@@ -51,6 +51,12 @@
     <ClInclude Include="Groove.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SafetyFactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Diameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TractionCalculation.cpp">
@@ -80,6 +86,12 @@
     <ClCompile Include="Groove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SafetyFactor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Diameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TractionCalculation.rc">
@@ -99,6 +111,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="C:\Users\zengtian\Pictures\alpha.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\Users\zengtian\Pictures\微信截图_20161130110339.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="c:\users\zengtian\pictures\bitmap3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\Users\zengtian\Pictures\微信截图_20161130110417.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\Users\zengtian\Pictures\微信截图_20161130110451.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
