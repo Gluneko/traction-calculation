@@ -1,11 +1,9 @@
-﻿Build started 2016/11/30 15:24:31.
+﻿Build started 2016/12/1 22:27:27.
      1>Project "E:\projects\TractionCalculation\TractionCalculation\TractionCalculation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\TractionCalculation.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt CompensationChain.cpp Diameter.cpp Groove.cpp SafetyFactor.cpp StartingTorque.cpp TestDlg.cpp Traction.cpp TractionCalculation.cpp TractionCalculationDlg.cpp WrapAngle.cpp
          Traction.cpp
-         SafetyFactor.cpp
          Groove.cpp
-         Diameter.cpp
          Generating Code...
          Compiling...
          WrapAngle.cpp
@@ -14,6 +12,8 @@
      1>e:\projects\tractioncalculation\tractioncalculation\tractioncalculation.cpp(106): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
          TestDlg.cpp
          StartingTorque.cpp
+         SafetyFactor.cpp
+         Diameter.cpp
          CompensationChain.cpp
          Generating Code...
        ResourceCompile:
@@ -36,4 +36,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:29.39
+Time Elapsed 00:01:02.70

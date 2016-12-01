@@ -140,14 +140,12 @@ void CGroove::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 		// 获取被选择列表项第二个子项的文本   
 		beta = m_ctllist.GetItemText(pNMListView->iItem, 1);
 		gama = m_ctllist.GetItemText(pNMListView->iItem, 2);
-		double gama_n = _tstof(gama.GetBuffer());
+		/*double gama_n = _tstof(gama.GetBuffer());
 		if ((type == "半圆槽"&&gama_n < 25) || (type == "V形槽"&&gama_n < 35))
 		{
 			MessageBox(_T("超出规定！"), _T("提示"), MB_ICONINFORMATION);
-		}
-		else{
+		}*/
 			CGroove::OnOK();
-		}
 		// 将选择的语言显示与编辑框中   
 		//SetDlgItemText(IDC_LANG_SEL_EDIT, strLangName);
 	}

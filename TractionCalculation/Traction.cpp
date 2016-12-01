@@ -8,6 +8,8 @@
 #include "CompensationChain.h"
 #include "WrapAngle.h"
 #include "Groove.h"
+#include "Diameter.h"
+#include "SafetyFactor.h"
 // CTraction dialog
 
 IMPLEMENT_DYNAMIC(CTraction, CDialogEx)
@@ -62,6 +64,45 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	, m_rope(0)
 	, m_chain(0)
 	, m_cable(0)
+	, m_dt(0)
+	, m_fmax(0)
+	, m_t10(0)
+	, m_t20(0)
+	, m_t11(0)
+	, m_t21(0)
+	, m_t1dt21(0)
+	, m_t1mt21(0)
+	, m_t121(0)
+	, m_t221(0)
+	, m_t1dt221(0)
+	, m_t1mt221(0)
+	, m_t122(0)
+	, m_t222(0)
+	, m_t1dt222(0)
+	, m_t1mt222(0)
+	, m_t123(0)
+	, m_t223(0)
+	, m_t1dt223(0)
+	, m_t1mt223(0)
+	, m_t124(0)
+	, m_t224(0)
+	, m_t1dt224(0)
+	, m_t1mt224(0)
+	, m_t131(0)
+	, m_t231(0)
+	, m_t1dt231(0)
+	, m_t1mt231(0)
+	, m_t132(0)
+	, m_t232(0)
+	, m_t1dt232(0)
+	, m_t1mt232(0)
+	, m_t141(0)
+	, m_t242(0)
+	, m_p4(0)
+	, m_t112(0)
+	, m_t212(0)
+	, m_t1dt212(0)
+	, m_t1mt212(0)
 {
 	m_w_radio=0;
 	m_w_dt = 410;
@@ -74,6 +115,7 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	strPro = "硬化处理";
 	strPos = "对重侧";
 	strSel = "轿厢侧";
+	m_ne = 0;
 }
 
 CTraction::~CTraction()
@@ -153,7 +195,6 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SEL_POS, m_sel);
 	DDX_Control(pDX, IDC_SA, m_esa);
 	DDX_Text(pDX, IDC_DR3, m_ddr);
-	DDV_MinMaxDouble(pDX, m_ddr, 0, 1e+30);
 	DDX_Text(pDX, IDC_DTDR, m_dtdr);
 	DDX_Text(pDX, IDC_SF, m_sf);
 	DDX_Text(pDX, IDC_SA, m_sa);
@@ -161,6 +202,47 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ROPE, m_rope);
 	DDX_Text(pDX, IDC_CHAIN, m_chain);
 	DDX_Text(pDX, IDC_CABLE, m_cable);
+	DDX_Text(pDX, IDC_DT, m_dt);
+	DDV_MinMaxDouble(pDX, m_dt, 0, 1e+30);
+	DDX_Control(pDX, IDC_FMAX, m_efmax);
+	DDX_Text(pDX, IDC_FMAX, m_fmax);
+	DDX_Text(pDX, IDC_T10, m_t10);
+	DDX_Text(pDX, IDC_T20, m_t20);
+	DDX_Text(pDX, IDC_T11, m_t11);
+	DDX_Text(pDX, IDC_T12, m_t21);
+	DDX_Text(pDX, IDC_T1DT21, m_t1dt21);
+	DDX_Text(pDX, IDC_T1MT21, m_t1mt21);
+	DDX_Text(pDX, IDC_T13, m_t121);
+	DDX_Text(pDX, IDC_T14, m_t221);
+	DDX_Text(pDX, IDC_T1DT22, m_t1dt221);
+	DDX_Text(pDX, IDC_T1MT22, m_t1mt221);
+	DDX_Text(pDX, IDC_T15, m_t122);
+	DDX_Text(pDX, IDC_T16, m_t222);
+	DDX_Text(pDX, IDC_T1DT23, m_t1dt222);
+	DDX_Text(pDX, IDC_T1MT23, m_t1mt222);
+	DDX_Text(pDX, IDC_T17, m_t123);
+	DDX_Text(pDX, IDC_T18, m_t223);
+	DDX_Text(pDX, IDC_T1DT24, m_t1dt223);
+	DDX_Text(pDX, IDC_T1MT24, m_t1mt223);
+	DDX_Text(pDX, IDC_T19, m_t124);
+	DDX_Text(pDX, IDC_T21, m_t224);
+	DDX_Text(pDX, IDC_T1DT25, m_t1dt224);
+	DDX_Text(pDX, IDC_T1MT25, m_t1mt224);
+	DDX_Text(pDX, IDC_T22, m_t131);
+	DDX_Text(pDX, IDC_T23, m_t231);
+	DDX_Text(pDX, IDC_T1DT26, m_t1dt231);
+	DDX_Text(pDX, IDC_T1MT26, m_t1mt231);
+	DDX_Text(pDX, IDC_T24, m_t132);
+	DDX_Text(pDX, IDC_T25, m_t232);
+	DDX_Text(pDX, IDC_T1DT27, m_t1dt232);
+	DDX_Text(pDX, IDC_T1MT27, m_t1mt232);
+	DDX_Text(pDX, IDC_EDIT28, m_t141);
+	DDX_Text(pDX, IDC_EDIT29, m_t242);
+	DDX_Text(pDX, IDC_EDIT11, m_p4);
+	DDX_Text(pDX, IDC_T26, m_t112);
+	DDX_Text(pDX, IDC_T27, m_t212);
+	DDX_Text(pDX, IDC_T1DT28, m_t1dt212);
+	DDX_Text(pDX, IDC_T1MT28, m_t1mt212);
 }
 
 
@@ -179,6 +261,11 @@ BEGIN_MESSAGE_MAP(CTraction, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_SEL_POS, &CTraction::OnCbnSelchangeSelPos)
 	ON_EN_SETFOCUS(IDC_SA, &CTraction::OnEnSetfocusSa)
 	ON_BN_CLICKED(IDC_NE, &CTraction::OnBnClickedNe)
+	ON_BN_CLICKED(IDC_DR, &CTraction::OnBnClickedDr)
+	ON_BN_CLICKED(IDC_DR3, &CTraction::OnBnClickedDr3)
+	ON_EN_CHANGE(IDC_EDIT11, &CTraction::OnEnChangeEdit11)
+	ON_EN_SETFOCUS(IDC_FMAX, &CTraction::OnEnSetfocusFmax)
+	ON_EN_CHANGE(IDC_H, &CTraction::OnEnChangeH)
 END_MESSAGE_MAP()
 
 
@@ -418,8 +505,17 @@ void CTraction::OnBnClickedBeta()
 		SetDlgItemText(IDC_BETA, dlg.beta);
 		m_beta = _tstof(dlg.beta.GetBuffer());
 		SetDlgItemText(IDC_GAMA, dlg.gama);
-		m_beta = _tstof(dlg.gama.GetBuffer());
+		m_gama = _tstof(dlg.gama.GetBuffer());
+		if ((strWeb == "半圆槽"&&m_gama < 25) || (strWeb == "V形槽"&&m_gama < 35))
+		{
+			SetDlgItemText(IDC_STATIC_GAMA, _T("超出规定"));
+		}
+		else
+		{
+			SetDlgItemText(IDC_STATIC_GAMA, _T("°"));
+		}
 	}
+	UpdateData(FALSE);
 }
 
 
@@ -432,8 +528,9 @@ void CTraction::OnBnClickedGama()
 		SetDlgItemText(IDC_BETA, dlg.beta);
 		m_beta = _tstof(dlg.beta.GetBuffer());
 		SetDlgItemText(IDC_GAMA, dlg.gama);
-		m_beta = _tstof(dlg.gama.GetBuffer());
+		m_gama = _tstof(dlg.gama.GetBuffer());
 	}
+	UpdateData(FALSE);
 }
 
 
@@ -460,8 +557,8 @@ void CTraction::OnBnClickedBtnCalc()
 	else
 	{
 		m_f1 = 0;
-		m_f1 = 0;
-		m_f1 = 0;
+		m_f2 = 0;
+		m_f3 = 0;
 	}
 	m_ef1 = exp(m_f1*r_alpha);
 	m_ef2 = exp(m_f2*r_alpha);
@@ -470,6 +567,17 @@ void CTraction::OnBnClickedBtnCalc()
 	m_mmpcar = m_npcar*0.6*m_mpcar;
 	m_mmpcwt = m_npcwt*0.6*m_mpcwt;
 	m_mmptd = m_nptd*0.6*m_mptd;
+	m_dtdr = m_dt / m_dr;
+	m_sf=max(pow(10, (2.6834 - log10(695.85 * 1000000 * m_ne / pow(m_dtdr,8.567))) / log10(77.09*pow(m_dtdr, -2.894))), m_beta == 2 ? 16 : 12);
+	m_sa=m_ns*m_ddr * 1000 / m_t141;
+	m_pp = m_t141 / (m_ns*m_ddr*m_dt)*((strWeb == "V形槽") && (r_beta == 0) ? 4.5 / sin(r_gama / 2) : 8 * cos(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+	m_rope = m_ns*m_r*m_qs*m_h;
+	m_chain = m_nc*m_qc*m_h;
+	m_cable = m_nt*m_qt*m_h / 2;
+	m_qt = m_h > 80 ? 1.0943 : 0.8513;
+	m_t11 = ((m_p + 1.25*m_q + m_mc / 2) / m_r + m_qs*m_ns*m_h)*m_gn;
+
+	m_fmax = (m_alpha > 180 ? 2 : 1)*max(m_t11 + m_t21, m_t112 + m_t212) / m_gn;
 
 	OnPaint();
 	UpdateData(FALSE);
@@ -528,4 +636,75 @@ void CTraction::OnEnSetfocusSa()
 void CTraction::OnBnClickedNe()
 {
 	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+	CSafetyFactor dlg(strSel,m_dt,strWeb,m_beta,m_gama);
+	if (IDOK == dlg.DoModal())
+	{
+		m_ne = dlg.m_nequiv;
+		CString str;
+		str.Format(_T("%.3f"), m_ne);
+		SetDlgItemText(IDC_NE, str);
+	}
+	UpdateData(FALSE);
+}
+
+
+void CTraction::OnBnClickedDr()
+{
+	// TODO: Add your control notification handler code here
+	
+	CDiameter dlg;
+	if (IDOK == dlg.DoModal())
+	{
+		SetDlgItemText(IDC_DR, dlg.m_dr);
+		m_dr = _tstof(dlg.m_dr.GetBuffer());
+		SetDlgItemText(IDC_DR3, dlg.m_ddr);
+		m_ddr = _tstof(dlg.m_ddr.GetBuffer());
+	}
+	UpdateData(FALSE);
+}
+
+
+void CTraction::OnBnClickedDr3()
+{
+	// TODO: Add your control notification handler code here
+	OnBnClickedDr();
+}
+
+
+void CTraction::OnEnChangeEdit11()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialogEx::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
+}
+
+
+void CTraction::OnEnSetfocusFmax()
+{
+	// TODO: Add your control notification handler code here
+	//提示气泡
+	m_efmax.ShowBalloonTip(
+		_T("USER"),
+		_T("可以只考虑静载"),
+		TTI_INFO);
+}
+
+
+void CTraction::OnEnChangeH()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialogEx::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
+	UpdateData(TRUE);
+	CString str;
+	str = (m_h < 30) ? "选0" : "不选0";
+	SetDlgItemText(IDC_STATIC_NC, str);
+	UpdateData(FALSE);
 }

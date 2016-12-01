@@ -15,6 +15,7 @@ public:
 	vector<vector<double>> vec2;
 	vector<CString> vec0;
 	vector<CString> vec1;
+	CString m_dr, m_ddr;
 // Dialog Data
 	enum { IDD = IDD_DR };
 
@@ -24,4 +25,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CListCtrl m_ctllist;
+	afx_msg void OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult);
+	virtual BOOL OnInitDialog();
 };
