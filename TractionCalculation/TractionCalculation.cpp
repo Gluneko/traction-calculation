@@ -68,6 +68,13 @@ BOOL CTractionCalculationApp::InitInstance()
 	// 更改用于存储设置的注册表项
 	// TODO:  应适当修改该字符串，
 	// 例如修改为公司或组织名
+	/*if (!AfxOleInit()){
+
+		AfxMessageBox(_T("初始化Ole出错！"));
+
+		return FALSE;
+
+	}*/
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 	//CTractionCalculationDlg dlg(_T("曳引力计算"));
 	CTractionCalculationDlg dlg;

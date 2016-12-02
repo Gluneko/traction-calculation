@@ -2,6 +2,9 @@
 #include "CompensationChain.h"
 #include "TestDlg.h"
 #include "afxwin.h"
+//#include "Excel.h"
+#include <vector>
+using namespace std;
 // CTraction dialog
 
 class CTraction : public CDialogEx
@@ -14,6 +17,7 @@ public:
 	int GetScrollPos(int nBar, UINT nSBCode);
 	void ScrollClient(int nBar, int nPos);
 	void VScrool(int nBar, UINT nSBCode);
+	double MaxAll(vector<double> vec);
 // Dialog Data
 	enum { IDD = IDD_TRACTION2 };
 
@@ -149,4 +153,37 @@ public:
 	double m_t212;
 	double m_t1dt212;
 	double m_t1mt212;
+	afx_msg void OnEnChangeH();
+	double m_mc1;
+	double m_mc2;
+	double m_mc3;
+	double m_mc4;
+	afx_msg void OnEnSetfocusMc1();
+	CEdit m_emc1;
+	CString m_res11;
+	CString m_res12;
+	CString m_res21;
+	CString m_res22;
+	CString m_res23;
+	CString m_res24;
+	CString m_res31;
+	CString m_res32;
+	CString m_res41;
+	CString m_res43;
+	CString m_safeRes;
+	CString m_res;
+	int m_num;
+	CString m_ropeRes;
+	CString m_pRes;
+	afx_msg void OnBnClickedExport();
+	//定义接口类变量 
+	/*CApplication app;
+	CWorkbook book;
+	CWorkbooks books;
+	CWorksheet sheet;
+	CWorksheets sheets;
+	CRange range;
+	CFont0 font;
+	CRange cols;
+	LPDISPATCH lpDisp;*/
 };

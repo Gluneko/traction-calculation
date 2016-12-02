@@ -10,6 +10,7 @@
 #include "Groove.h"
 #include "Diameter.h"
 #include "SafetyFactor.h"
+#include "math.h"
 // CTraction dialog
 
 IMPLEMENT_DYNAMIC(CTraction, CDialogEx)
@@ -103,6 +104,14 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	, m_t212(0)
 	, m_t1dt212(0)
 	, m_t1mt212(0)
+	, m_mc1(0)
+	, m_mc2(0)
+	, m_mc3(0)
+	, m_mc4(0)
+	, m_res(_T(""))
+	, m_num(0)
+	, m_ropeRes(_T(""))
+	, m_pRes(_T(""))
 {
 	m_w_radio=0;
 	m_w_dt = 410;
@@ -243,6 +252,26 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_T27, m_t212);
 	DDX_Text(pDX, IDC_T1DT28, m_t1dt212);
 	DDX_Text(pDX, IDC_T1MT28, m_t1mt212);
+	DDX_Text(pDX, IDC_MC1, m_mc1);
+	DDX_Text(pDX, IDC_MC2, m_mc2);
+	DDX_Text(pDX, IDC_MC3, m_mc3);
+	DDX_Text(pDX, IDC_MC4, m_mc4);
+	DDX_Control(pDX, IDC_MC1, m_emc1);
+	DDX_Text(pDX, IDC_RES11, m_res11);
+	DDX_Text(pDX, IDC_RES12, m_res12);
+	DDX_Text(pDX, IDC_RES13, m_res21);
+	DDX_Text(pDX, IDC_RES14, m_res22);
+	DDX_Text(pDX, IDC_RES15, m_res23);
+	DDX_Text(pDX, IDC_RES16, m_res24);
+	DDX_Text(pDX, IDC_RES17, m_res31);
+	DDX_Text(pDX, IDC_RES18, m_res32);
+	DDX_Text(pDX, IDC_RES19, m_res41);
+	DDX_Text(pDX, IDC_RES20, m_res43);
+	DDX_Text(pDX, IDC_SAFE_RES, m_safeRes);
+	DDX_Text(pDX, IDC_RESULT, m_res);
+	DDX_Text(pDX, IDC_NUM, m_num);
+	DDX_Text(pDX, IDC_ROS_RES, m_ropeRes);
+	DDX_Text(pDX, IDC_P_RES, m_pRes);
 }
 
 
@@ -266,6 +295,8 @@ BEGIN_MESSAGE_MAP(CTraction, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT11, &CTraction::OnEnChangeEdit11)
 	ON_EN_SETFOCUS(IDC_FMAX, &CTraction::OnEnSetfocusFmax)
 	ON_EN_CHANGE(IDC_H, &CTraction::OnEnChangeH)
+	ON_EN_SETFOCUS(IDC_MC1, &CTraction::OnEnSetfocusMc1)
+	ON_BN_CLICKED(IDC_EXPORT, &CTraction::OnBnClickedExport)
 END_MESSAGE_MAP()
 
 
@@ -576,14 +607,89 @@ void CTraction::OnBnClickedBtnCalc()
 	m_cable = m_nt*m_qt*m_h / 2;
 	m_qt = m_h > 80 ? 1.0943 : 0.8513;
 	m_t11 = ((m_p + 1.25*m_q + m_mc / 2) / m_r + m_qs*m_ns*m_h)*m_gn;
-
+	m_t21 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_mc / 2 + m_qtcwt*m_h / 2) / m_r*m_gn;
+	m_t112 = (m_p + 1.25*m_q + m_mc / 2 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*m_gn;
+	m_t212 = ((m_p + m_psi*m_q + m_mc / 2) / m_r + m_ns*m_qs*m_h)*m_gn;
+	m_t121 = (m_p + m_q) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcar : 0))*m_a;
+	m_t221 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
+	m_t122 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
+	m_t222 = (m_p + m_psi*m_q) / m_r*(m_gn + m_a) + m_ns*m_qs*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn + ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
+	m_t123 = (m_p + m_q + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
+	m_t223 = (m_p + m_psi*m_q) / m_r*(m_gn - m_a) + m_ns*m_qs*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn - ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
+	m_t124 = (m_p + 0) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) - ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcar : 0))*m_a;
+	m_t224 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
+	m_t131 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2 + m_mc / 2) / m_r*m_gn;
+	m_t231 = m_ns*m_qs*m_h*m_gn;
+	m_t132 = m_ns*m_qs*m_h*m_gn;
+	m_t232 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_mc / 2 + m_qtcwt*m_h / 2) / m_r*m_gn;
+	m_t141 = ((m_p + m_q + m_mc / 2) / m_r + m_qs*m_ns*m_h)*m_gn;
+	m_t242 = ((m_p + m_psi*m_q + m_mc / 2) / m_r + m_ns*m_qs*m_h)*m_gn;
+	m_p4 = 4 + 8.5 / (1 + m_r*m_v);
+	m_t1dt21 = max(m_t11, m_t21) / min(m_t11, m_t21);
+	m_t1mt21 = abs(m_t11 - m_t21);
+	m_t1dt212 = max(m_t112, m_t212) / min(m_t112, m_t212);
+	m_t1mt212 = abs(m_t112 - m_t212);
+	m_t1dt221 = max(m_t121, m_t221) / min(m_t121, m_t221);
+	m_t1mt221 = abs(m_t121 - m_t221);
+	m_t1dt222 = max(m_t122, m_t222) / min(m_t122, m_t222);
+	m_t1mt222 = abs(m_t122 - m_t222);
+	m_t1dt223 = max(m_t123, m_t223) / min(m_t123, m_t223);
+	m_t1mt223 = abs(m_t123 - m_t223);
+	m_t1dt224 = max(m_t124, m_t224) / min(m_t124, m_t224);
+	m_t1mt224 = abs(m_t124 - m_t224);
+	m_t1dt231 = max(m_t131, m_t231) / min(m_t131, m_t231);
+	m_t1mt231 = abs(m_t131 - m_t231);
+	m_t1dt232 = max(m_t132, m_t232) / min(m_t132, m_t232);
+	m_t1mt232 = abs(m_t132 - m_t232);
 	m_fmax = (m_alpha > 180 ? 2 : 1)*max(m_t11 + m_t21, m_t112 + m_t212) / m_gn;
-
+	vector<double> vec1 = { m_t1mt21, m_t1mt212, m_t1mt221, m_t1mt222, m_t1mt223, m_t1mt224 },
+		vec2 = { m_t1mt231, m_t1mt232 };
+	m_t10=MaxAll(vec1)*m_dt / 2 / 1000;
+	m_t20 = MaxAll(vec2)*m_dt / 2 / 1000;
+	m_mc1 = m_ns*m_qs*m_r - m_nt*m_qt / 4;
+	m_mc2 = m_qc*m_nc / m_nc;
+	m_mc3 = m_qc*m_nc / (m_ns*m_qs*m_r);
+	m_mc4 = m_nc*m_qc / m_mc1;
+	m_res11 = (m_t1dt21 <= m_ef1)?"通过":"不通过";
+	m_res12 = (m_t1dt212 <= m_ef1) ? "通过" : "不通过";
+	m_res21 = (m_t1dt221 <= m_ef2) ? "通过" : "不通过";
+	m_res22 = (m_t1dt222 <= m_ef2) ? "通过" : "不通过";
+	m_res23 = (m_t1dt223 <= m_ef2) ? "通过" : "不通过";
+	m_res24 = (m_t1dt224 <= m_ef2)?"通过":"不通过";
+	m_res31 = (m_t1dt231 >= m_ef3) ? "通过" : "不通过";
+	m_res32 = (m_t1dt232 >= m_ef3) ? "通过" : "不通过";
+	m_res41 = m_safeRes = (m_sa >= m_sf) ? "通过" : "不通过";
+	m_res43 = (m_sa <= m_p4) ? "通过" : "不通过";
+	m_ropeRes = _T("钢丝绳") + m_res41;
+	m_pRes = _T("比压") + m_res43;
+	vector<CString> vec = { m_res11, m_res12, m_res21, m_res22, m_res23, m_res24, m_res31, m_res32 };
+	m_res = "通过";
+	m_num = 0;
+	for (auto i = 0; i < vec.size(); ++i)
+	{
+		if (vec[i] == "不通过")
+		{
+			m_res = "不通过";
+			++m_num;
+		}
+	}
+	GetDlgItem(IDC_EXPORT)->EnableWindow(TRUE);
 	OnPaint();
 	UpdateData(FALSE);
 }
 
-
+double CTraction::MaxAll(vector<double> vec)
+{
+	double max = vec[0];
+	for (auto i = 1; i < vec.size(); ++i)
+	{
+		if (vec[i]>max)
+		{
+			max = vec[i];
+		}
+	}
+	return max;
+}
 void CTraction::OnCbnSelchangePro()
 {
 	// TODO: Add your control notification handler code here
@@ -707,4 +813,55 @@ void CTraction::OnEnChangeH()
 	str = (m_h < 30) ? "选0" : "不选0";
 	SetDlgItemText(IDC_STATIC_NC, str);
 	UpdateData(FALSE);
+}
+
+
+void CTraction::OnEnSetfocusMc1()
+{
+	// TODO: Add your control notification handler code here
+	m_emc1.ShowBalloonTip(
+		_T("USER"),
+		_T("理论计算单位重量，已去除电缆。"),
+		TTI_INFO);
+}
+
+
+void CTraction::OnBnClickedExport()
+{
+	// TODO: Add your control notification handler code here
+	//导出
+	//COleVariant covOptional((long)DISP_E_PARAMNOTFOUND, VT_ERROR);
+	//if (!app.CreateDispatch(_T("Excel.Application")))
+	//{
+	//	this->MessageBox(_T("无法创建Excel应用！"));
+	//	//return TRUE;
+	//}
+	//else
+	//{
+	//	books = app.get_Workbooks();
+	//	//打开Excel，其中pathname为Excel表的路径名  
+
+	//	book = books.Add(covOptional);
+	//	sheets = book.get_Worksheets();
+	//	sheet = sheets.get_Item(COleVariant((short)1));  //获得坐标为（A，1）和（B，1）的两个单元格 
+	//	range = sheet.get_Range(COleVariant(_T("A1")), COleVariant(_T("B1")));  //设置单元格类容为Hello Exce
+	//	range.put_Value2(COleVariant(_T("Hello Excel")));  //选择整列，并设置宽度为自适应 
+	//	cols = range.get_EntireColumn();
+	//	cols.AutoFit();
+	//	//设置字体为粗体 
+	//	font = range.get_Font();
+	//	font.put_Bold(COleVariant((short)TRUE));
+	//	//获得坐标为（C，2）单元格 
+	//	range = sheet.get_Range(COleVariant(_T("C2")), COleVariant(_T("C2")));
+	//	//设置公式“=RAND()*100000”
+	//	range.put_Formula(COleVariant(_T("=RAND()*100000")));
+	//	//设置数字格式为货币型  
+	//	range.put_NumberFormat(COleVariant(_T("$0.00")));
+	//	//选择整列，并设置宽度为自适应  
+	//	cols = range.get_EntireColumn();
+	//	cols.AutoFit();
+	//	//显示Excel表
+	//	app.put_Visible(TRUE);
+	//	app.put_UserControl(TRUE);
+	//}
 }

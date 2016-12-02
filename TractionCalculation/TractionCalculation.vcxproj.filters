@@ -57,6 +57,12 @@
     <ClInclude Include="Diameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Excel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CFont0.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TractionCalculation.cpp">
@@ -66,9 +72,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StartingTorque.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CompensationChain.cpp">
