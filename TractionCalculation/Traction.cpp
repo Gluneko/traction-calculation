@@ -830,38 +830,66 @@ void CTraction::OnBnClickedExport()
 {
 	// TODO: Add your control notification handler code here
 	//导出
-	//COleVariant covOptional((long)DISP_E_PARAMNOTFOUND, VT_ERROR);
-	//if (!app.CreateDispatch(_T("Excel.Application")))
-	//{
-	//	this->MessageBox(_T("无法创建Excel应用！"));
-	//	//return TRUE;
-	//}
-	//else
-	//{
-	//	books = app.get_Workbooks();
-	//	//打开Excel，其中pathname为Excel表的路径名  
+	
+	if (!app.CreateDispatch(_T("Excel.Application")))
+	{
+		this->MessageBox(_T("无法创建Excel应用！"));
+		return;
+	}
+		/*CString strPath = CSelectFolderDlg::Show();
+		strPath += "曳引力计算.xls";*/
+		COleVariant covOptional((long)DISP_E_PARAMNOTFOUND, VT_ERROR);
+			books.AttachDispatch(app.get_Workbooks(), TRUE);
+			//book.AttachDispatch(books.Add(COleVariant(strPath)), TRUE);
+			book = books.Add(covOptional);
+			sheets = book.get_Worksheets();
+			sheet = sheets.get_Item(_variant_t("Sheet1")); // Get Sheet1
+			sheet.put_Name(_T("曳引力计算打印版")); // 改名
 
-	//	book = books.Add(covOptional);
-	//	sheets = book.get_Worksheets();
-	//	sheet = sheets.get_Item(COleVariant((short)1));  //获得坐标为（A，1）和（B，1）的两个单元格 
-	//	range = sheet.get_Range(COleVariant(_T("A1")), COleVariant(_T("B1")));  //设置单元格类容为Hello Exce
-	//	range.put_Value2(COleVariant(_T("Hello Excel")));  //选择整列，并设置宽度为自适应 
-	//	cols = range.get_EntireColumn();
-	//	cols.AutoFit();
-	//	//设置字体为粗体 
-	//	font = range.get_Font();
-	//	font.put_Bold(COleVariant((short)TRUE));
-	//	//获得坐标为（C，2）单元格 
-	//	range = sheet.get_Range(COleVariant(_T("C2")), COleVariant(_T("C2")));
-	//	//设置公式“=RAND()*100000”
-	//	range.put_Formula(COleVariant(_T("=RAND()*100000")));
-	//	//设置数字格式为货币型  
-	//	range.put_NumberFormat(COleVariant(_T("$0.00")));
-	//	//选择整列，并设置宽度为自适应  
-	//	cols = range.get_EntireColumn();
-	//	cols.AutoFit();
-	//	//显示Excel表
-	//	app.put_Visible(TRUE);
-	//	app.put_UserControl(TRUE);
-	//}
+
+			range = sheet.get_Range(COleVariant(_T("A1")), COleVariant(_T("I1")));
+			range.Merge(_variant_t((long)0));//合并单元格A1：I1
+			range.put_Value2(COleVariant(_T("电梯曳引力及曳引绳安全系数计算报告")));
+			//设置字体为粗体 
+			font = range.get_Font();
+			font.put_Italic(COleVariant((short)TRUE));
+		//	font.put_Bold(COleVariant((short)TRUE));
+			font.put_Bold(_variant_t((long)1));
+		//	auto tmp=font.get_Bold();
+			font.put_FontStyle(COleVariant(_T("宋体")));
+			//tmp = font.get_FontStyle();
+			font.put_Size(COleVariant(_T("16")));
+			//tmp = font.get_Size();
+			app.put_Visible(TRUE);
+			app.put_UserControl(TRUE);
+
+
+			// 得到全部Cells，此时,rngXls 是cells的集合
+			//rngXls = wsSheetAcc.GetCells();
+		//books = app.get_Workbooks();
+		////打开Excel，其中pathname为Excel表的路径名  
+
+		//book = books.Add(covOptional);
+		//sheets = book.get_Worksheets();
+		//sheet = sheets.get_Item(COleVariant((short)1));  //获得坐标为（A，1）和（B，1）的两个单元格 
+		//range = sheet.get_Range(COleVariant(_T("A1")), COleVariant(_T("B1")));  //设置单元格类容为Hello Exce
+		//range.put_Value2(COleVariant(_T("Hello Excel")));  //选择整列，并设置宽度为自适应 
+		//cols = range.get_EntireColumn();
+		//cols.AutoFit();
+		////设置字体为粗体 
+		//font = range.get_Font();
+		////font.put_Bold(COleVariant((short)TRUE));
+		//font.put_Bold(COleVariant(_T("TRUE")));
+		////获得坐标为（C，2）单元格 
+		//range = sheet.get_Range(COleVariant(_T("C2")), COleVariant(_T("C2")));
+		////设置公式“=RAND()*100000”
+		//range.put_Formula(COleVariant(_T("=RAND()*100000")));
+		////设置数字格式为货币型  
+		//range.put_NumberFormat(COleVariant(_T("$0.00")));
+		////选择整列，并设置宽度为自适应  
+		//cols = range.get_EntireColumn();
+		//cols.AutoFit();
+		////显示Excel表
+		//app.put_Visible(TRUE);
+		//app.put_UserControl(TRUE);
 }

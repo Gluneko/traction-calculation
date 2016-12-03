@@ -60,7 +60,7 @@
     <ClInclude Include="Excel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CFont0.h">
+    <ClInclude Include="SelectFolderDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -93,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Diameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StartingTorque.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

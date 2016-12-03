@@ -2,7 +2,8 @@
 #include "CompensationChain.h"
 #include "TestDlg.h"
 #include "afxwin.h"
-//#include "Excel.h"
+#include "Excel.h"
+#include "SelectFolderDlg.h"
 #include <vector>
 using namespace std;
 // CTraction dialog
@@ -177,7 +178,7 @@ public:
 	CString m_pRes;
 	afx_msg void OnBnClickedExport();
 	//定义接口类变量 
-	/*CApplication app;
+	CApplication app;
 	CWorkbook book;
 	CWorkbooks books;
 	CWorksheet sheet;
@@ -185,5 +186,5 @@ public:
 	CRange range;
 	CFont0 font;
 	CRange cols;
-	LPDISPATCH lpDisp;*/
+	LPDISPATCH lpDisp;
 };
