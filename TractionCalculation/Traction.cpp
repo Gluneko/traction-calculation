@@ -1,4 +1,4 @@
-// Traction.cpp : implementation file
+ï»¿// Traction.cpp : implementation file
 //
 
 #include "stdafx.h"
@@ -119,11 +119,11 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	m_w_la=303;
 	m_w_h1=702;
 	m_w_alpha2=m_alpha*pi/180;
-	m_w_way = "µ¥ÈÆ";
-	strWeb = "°ëÔ²²Û";
-	strPro = "Ó²»¯´¦Àí";
-	strPos = "¶ÔÖØ²à";
-	strSel = "½ÎÏá²à";
+	m_w_way = "å•ç»•";
+	strWeb = "åŠåœ†æ§½";
+	strPro = "ç¡¬åŒ–å¤„ç†";
+	strPos = "å¯¹é‡ä¾§";
+	strSel = "è½¿å¢ä¾§";
 	m_ne = 0;
 }
 
@@ -135,13 +135,13 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_Q, m_q);
-	DDV_MinMaxDouble(pDX, m_q, 0, 1e+30);
+	DDV_MinMaxInt(pDX, m_ns, 0, 2147483647);
 	DDX_Text(pDX, IDC_P, m_p);
-	DDV_MinMaxDouble(pDX, m_p, 0, 1e+30);
+	DDV_MinMaxInt(pDX, m_ns, 0, 2147483647);
 	DDX_Text(pDX, IDC_V, m_v);
-	DDV_MinMaxDouble(pDX, m_v, 0, 1e+30);
+	DDV_MinMaxInt(pDX, m_ns, 0, 2147483647);
 	DDX_Text(pDX, IDC_H, m_h);
-	DDV_MinMaxDouble(pDX, m_h, 0, 1e+30);
+	DDV_MinMaxInt(pDX, m_ns, 0, 2147483647);;
 	DDX_Text(pDX, IDC_PSI, m_psi);
 	DDV_MinMaxDouble(pDX, m_psi, 0, 1);
 	DDX_Text(pDX, IDC_GN, m_gn);
@@ -149,7 +149,7 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_A, m_a);
 	DDV_MinMaxDouble(pDX, m_a, 0, 1e+30);
 	DDX_Text(pDX, IDC_R, m_r);
-	DDV_MinMaxDouble(pDX, m_r, 0, 1e+30);
+	DDV_MinMaxInt(pDX, m_ns, 0, 2147483647);
 	DDX_Text(pDX, IDC_QS, m_qs);
 	DDV_MinMaxDouble(pDX, m_qs, 0, 1e+30);
 	DDX_Text(pDX, IDC_DR, m_dr);
@@ -443,21 +443,21 @@ BOOL CTraction::OnInitDialog()
 	si.nMax = sz.cy;
 	si.nMin = 0;
 	si.nPage = 300;
-	SetScrollInfo(SB_VERT, &si, FALSE);  //´Ëº¯Êı½«²úÉúÒ»¸ö´¹Ö±¹ö¶¯Ìõ
+	SetScrollInfo(SB_VERT, &si, FALSE);  //æ­¤å‡½æ•°å°†äº§ç”Ÿä¸€ä¸ªå‚ç›´æ»šåŠ¨æ¡
 	ShowScrollBar(SB_VERT, TRUE);
-	m_scType.AddString(_T("°ëÔ²²Û"));
-	m_scType.AddString(_T("VĞÎ²Û"));
+	m_scType.AddString(_T("åŠåœ†æ§½"));
+	m_scType.AddString(_T("Vå½¢æ§½"));
 	m_scType.SetCurSel(0);
-	m_pro.AddString(_T("Ó²»¯´¦Àí"));
-	m_pro.AddString(_T("Î´¾­Ó²»¯"));
+	m_pro.AddString(_T("ç¡¬åŒ–å¤„ç†"));
+	m_pro.AddString(_T("æœªç»ç¡¬åŒ–"));
 	m_pro.SetCurSel(0);
-	m_pos.AddString(_T("½ÎÏá²à"));
-	m_pos.AddString(_T("¶ÔÖØ²à"));
+	m_pos.AddString(_T("è½¿å¢ä¾§"));
+	m_pos.AddString(_T("å¯¹é‡ä¾§"));
 	m_pos.SetCurSel(0);
-	m_sel.AddString(_T("½ÎÏá²à"));
-	m_sel.AddString(_T("¶ÔÖØ²à"));
+	m_sel.AddString(_T("è½¿å¢ä¾§"));
+	m_sel.AddString(_T("å¯¹é‡ä¾§"));
 	m_sel.SetCurSel(0);
-	//SetDlgItemText(IDC_SCTYPE, _T("°ëÔ²²Û"));
+	//SetDlgItemText(IDC_SCTYPE, _T("åŠåœ†æ§½"));
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -475,11 +475,11 @@ void CTraction::OnCbnSelchangeSctype()
 	
 	int nSel;
 
-	// »ñÈ¡×éºÏ¿ò¿Ø¼şµÄÁĞ±í¿òÖĞÑ¡ÖĞÏîµÄË÷Òı   
+	// è·å–ç»„åˆæ¡†æ§ä»¶çš„åˆ—è¡¨æ¡†ä¸­é€‰ä¸­é¡¹çš„ç´¢å¼•   
 	nSel = m_scType.GetCurSel();
-	// ¸ù¾İÑ¡ÖĞÏîË÷Òı»ñÈ¡¸ÃÏî×Ö·û´®   
+	// æ ¹æ®é€‰ä¸­é¡¹ç´¢å¼•è·å–è¯¥é¡¹å­—ç¬¦ä¸²   
 	m_scType.GetLBText(nSel, strWeb);
-	// ½«×éºÏ¿òÖĞÑ¡ÖĞµÄ×Ö·û´®ÏÔÊ¾µ½IDC_SCTYPE±à¼­¿òÖĞ   
+	// å°†ç»„åˆæ¡†ä¸­é€‰ä¸­çš„å­—ç¬¦ä¸²æ˜¾ç¤ºåˆ°IDC_SCTYPEç¼–è¾‘æ¡†ä¸­   
 	//SetDlgItemText(IDC_SCTYPE, strWeb);
 }
 
@@ -537,13 +537,13 @@ void CTraction::OnBnClickedBeta()
 		m_beta = _tstof(dlg.beta.GetBuffer());
 		SetDlgItemText(IDC_GAMA, dlg.gama);
 		m_gama = _tstof(dlg.gama.GetBuffer());
-		if ((strWeb == "°ëÔ²²Û"&&m_gama < 25) || (strWeb == "VĞÎ²Û"&&m_gama < 35))
+		if ((strWeb == "åŠåœ†æ§½"&&m_gama < 25) || (strWeb == "Vå½¢æ§½"&&m_gama < 35))
 		{
-			SetDlgItemText(IDC_STATIC_GAMA, _T("³¬³ö¹æ¶¨"));
+			SetDlgItemText(IDC_STATIC_GAMA, _T("è¶…å‡ºè§„å®š"));
 		}
 		else
 		{
-			SetDlgItemText(IDC_STATIC_GAMA, _T("¡ã"));
+			SetDlgItemText(IDC_STATIC_GAMA, _T("Â°"));
 		}
 	}
 	UpdateData(FALSE);
@@ -573,17 +573,17 @@ void CTraction::OnBnClickedBtnCalc()
 	double r_gama = m_gama / pi * 180;
 	double r_alpha = m_alpha / pi * 180;
 	m_miu2 = 0.1 / (1+m_r*m_v/10);
-	if (strWeb == "°ëÔ²²Û")
+	if (strWeb == "åŠåœ†æ§½")
 	{
 		m_f1 = m_miu1 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi-r_beta-r_gama-sin(r_beta)+sin(r_gama));
 		m_f2 = m_miu2 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
 		m_f3 = m_miu3 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
 	}
-	else if (strWeb == "VĞÎ²Û")
+	else if (strWeb == "Vå½¢æ§½")
 	{
-		m_f1 = (strPro == "Ó²»¯´¦Àí") ? (m_miu1 / sin(r_gama / 2)) : 4 * m_miu1*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
-		m_f2 = (strPro == "Ó²»¯´¦Àí") ? (m_miu2 / sin(r_gama / 2)) : 4 * m_miu2*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
-		m_f3 = (strPro == "Ó²»¯´¦Àí") ? (m_miu3 / sin(r_gama / 2)) : 4 * m_miu3*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+		m_f1 = (strPro == "ç¡¬åŒ–å¤„ç†") ? (m_miu1 / sin(r_gama / 2)) : 4 * m_miu1*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+		m_f2 = (strPro == "ç¡¬åŒ–å¤„ç†") ? (m_miu2 / sin(r_gama / 2)) : 4 * m_miu2*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+		m_f3 = (strPro == "ç¡¬åŒ–å¤„ç†") ? (m_miu3 / sin(r_gama / 2)) : 4 * m_miu3*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
 	}
 	else
 	{
@@ -601,7 +601,7 @@ void CTraction::OnBnClickedBtnCalc()
 	m_dtdr = m_dt / m_dr;
 	m_sf=max(pow(10, (2.6834 - log10(695.85 * 1000000 * m_ne / pow(m_dtdr,8.567))) / log10(77.09*pow(m_dtdr, -2.894))), m_beta == 2 ? 16 : 12);
 	m_sa=m_ns*m_ddr * 1000 / m_t141;
-	m_pp = m_t141 / (m_ns*m_ddr*m_dt)*((strWeb == "VĞÎ²Û") && (r_beta == 0) ? 4.5 / sin(r_gama / 2) : 8 * cos(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+	m_pp = m_t141 / (m_ns*m_ddr*m_dt)*((strWeb == "Vå½¢æ§½") && (r_beta == 0) ? 4.5 / sin(r_gama / 2) : 8 * cos(r_beta / 2) / (pi - r_beta - sin(r_beta)));
 	m_rope = m_ns*m_r*m_qs*m_h;
 	m_chain = m_nc*m_qc*m_h;
 	m_cable = m_nt*m_qt*m_h / 2;
@@ -610,14 +610,14 @@ void CTraction::OnBnClickedBtnCalc()
 	m_t21 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_mc / 2 + m_qtcwt*m_h / 2) / m_r*m_gn;
 	m_t112 = (m_p + 1.25*m_q + m_mc / 2 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*m_gn;
 	m_t212 = ((m_p + m_psi*m_q + m_mc / 2) / m_r + m_ns*m_qs*m_h)*m_gn;
-	m_t121 = (m_p + m_q) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + ((strSel == "½ÎÏá²à" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcar : 0))*m_a;
-	m_t221 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "½ÎÏá²à" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
-	m_t122 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "½ÎÏá²à" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
-	m_t222 = (m_p + m_psi*m_q) / m_r*(m_gn + m_a) + m_ns*m_qs*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn + ((strSel == "½ÎÏá²à" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
-	m_t123 = (m_p + m_q + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "½ÎÏá²à" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
-	m_t223 = (m_p + m_psi*m_q) / m_r*(m_gn - m_a) + m_ns*m_qs*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn - ((strSel == "½ÎÏá²à" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
-	m_t124 = (m_p + 0) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) - ((strSel == "½ÎÏá²à" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcar : 0))*m_a;
-	m_t224 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "½ÎÏá²à" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
+	m_t121 = (m_p + m_q) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + ((strSel == "è½¿å¢ä¾§" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcar : 0))*m_a;
+	m_t221 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "è½¿å¢ä¾§" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
+	m_t122 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "è½¿å¢ä¾§" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
+	m_t222 = (m_p + m_psi*m_q) / m_r*(m_gn + m_a) + m_ns*m_qs*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn + ((strSel == "è½¿å¢ä¾§" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
+	m_t123 = (m_p + m_q + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "è½¿å¢ä¾§" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
+	m_t223 = (m_p + m_psi*m_q) / m_r*(m_gn - m_a) + m_ns*m_qs*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn - ((strSel == "è½¿å¢ä¾§" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
+	m_t124 = (m_p + 0) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) - ((strSel == "è½¿å¢ä¾§" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcar : 0))*m_a;
+	m_t224 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "è½¿å¢ä¾§" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
 	m_t131 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2 + m_mc / 2) / m_r*m_gn;
 	m_t231 = m_ns*m_qs*m_h*m_gn;
 	m_t132 = m_ns*m_qs*m_h*m_gn;
@@ -650,26 +650,26 @@ void CTraction::OnBnClickedBtnCalc()
 	m_mc2 = m_qc*m_nc / m_nc;
 	m_mc3 = m_qc*m_nc / (m_ns*m_qs*m_r);
 	m_mc4 = m_nc*m_qc / m_mc1;
-	m_res11 = (m_t1dt21 <= m_ef1)?"Í¨¹ı":"²»Í¨¹ı";
-	m_res12 = (m_t1dt212 <= m_ef1) ? "Í¨¹ı" : "²»Í¨¹ı";
-	m_res21 = (m_t1dt221 <= m_ef2) ? "Í¨¹ı" : "²»Í¨¹ı";
-	m_res22 = (m_t1dt222 <= m_ef2) ? "Í¨¹ı" : "²»Í¨¹ı";
-	m_res23 = (m_t1dt223 <= m_ef2) ? "Í¨¹ı" : "²»Í¨¹ı";
-	m_res24 = (m_t1dt224 <= m_ef2)?"Í¨¹ı":"²»Í¨¹ı";
-	m_res31 = (m_t1dt231 >= m_ef3) ? "Í¨¹ı" : "²»Í¨¹ı";
-	m_res32 = (m_t1dt232 >= m_ef3) ? "Í¨¹ı" : "²»Í¨¹ı";
-	m_res41 = m_safeRes = (m_sa >= m_sf) ? "Í¨¹ı" : "²»Í¨¹ı";
-	m_res43 = (m_sa <= m_p4) ? "Í¨¹ı" : "²»Í¨¹ı";
-	m_ropeRes = _T("¸ÖË¿Éş") + m_res41;
-	m_pRes = _T("±ÈÑ¹") + m_res43;
+	m_res11 = (m_t1dt21 <= m_ef1)?"é€šè¿‡":"ä¸é€šè¿‡";
+	m_res12 = (m_t1dt212 <= m_ef1) ? "é€šè¿‡" : "ä¸é€šè¿‡";
+	m_res21 = (m_t1dt221 <= m_ef2) ? "é€šè¿‡" : "ä¸é€šè¿‡";
+	m_res22 = (m_t1dt222 <= m_ef2) ? "é€šè¿‡" : "ä¸é€šè¿‡";
+	m_res23 = (m_t1dt223 <= m_ef2) ? "é€šè¿‡" : "ä¸é€šè¿‡";
+	m_res24 = (m_t1dt224 <= m_ef2)?"é€šè¿‡":"ä¸é€šè¿‡";
+	m_res31 = (m_t1dt231 >= m_ef3) ? "é€šè¿‡" : "ä¸é€šè¿‡";
+	m_res32 = (m_t1dt232 >= m_ef3) ? "é€šè¿‡" : "ä¸é€šè¿‡";
+	m_res41 = m_safeRes = (m_sa >= m_sf) ? "é€šè¿‡" : "ä¸é€šè¿‡";
+	m_res43 = (m_sa <= m_p4) ? "é€šè¿‡" : "ä¸é€šè¿‡";
+	m_ropeRes = _T("é’¢ä¸ç»³") + m_res41;
+	m_pRes = _T("æ¯”å‹") + m_res43;
 	vector<CString> vec = { m_res11, m_res12, m_res21, m_res22, m_res23, m_res24, m_res31, m_res32 };
-	m_res = "Í¨¹ı";
+	m_res = "é€šè¿‡";
 	m_num = 0;
 	for (auto i = 0; i < vec.size(); ++i)
 	{
-		if (vec[i] == "²»Í¨¹ı")
+		if (vec[i] == "ä¸é€šè¿‡")
 		{
-			m_res = "²»Í¨¹ı";
+			m_res = "ä¸é€šè¿‡";
 			++m_num;
 		}
 	}
@@ -695,9 +695,9 @@ void CTraction::OnCbnSelchangePro()
 	// TODO: Add your control notification handler code here
 	int nSel;
 
-	// »ñÈ¡×éºÏ¿ò¿Ø¼şµÄÁĞ±í¿òÖĞÑ¡ÖĞÏîµÄË÷Òı   
+	// è·å–ç»„åˆæ¡†æ§ä»¶çš„åˆ—è¡¨æ¡†ä¸­é€‰ä¸­é¡¹çš„ç´¢å¼•   
 	nSel = m_scType.GetCurSel();
-	// ¸ù¾İÑ¡ÖĞÏîË÷Òı»ñÈ¡¸ÃÏî×Ö·û´®   
+	// æ ¹æ®é€‰ä¸­é¡¹ç´¢å¼•è·å–è¯¥é¡¹å­—ç¬¦ä¸²   
 	m_pro.GetLBText(nSel, strPro);
 }
 
@@ -707,9 +707,9 @@ void CTraction::OnCbnSelchangePos()
 	// TODO: Add your control notification handler code here
 	int nSel;
 
-	// »ñÈ¡×éºÏ¿ò¿Ø¼şµÄÁĞ±í¿òÖĞÑ¡ÖĞÏîµÄË÷Òı   
+	// è·å–ç»„åˆæ¡†æ§ä»¶çš„åˆ—è¡¨æ¡†ä¸­é€‰ä¸­é¡¹çš„ç´¢å¼•   
 	nSel = m_scType.GetCurSel();
-	// ¸ù¾İÑ¡ÖĞÏîË÷Òı»ñÈ¡¸ÃÏî×Ö·û´®   
+	// æ ¹æ®é€‰ä¸­é¡¹ç´¢å¼•è·å–è¯¥é¡¹å­—ç¬¦ä¸²   
 	m_pos.GetLBText(nSel, strPos);
 }
 
@@ -720,9 +720,9 @@ void CTraction::OnCbnSelchangeSelPos()
 	// TODO: Add your control notification handler code here
 	int nSel;
 
-	// »ñÈ¡×éºÏ¿ò¿Ø¼şµÄÁĞ±í¿òÖĞÑ¡ÖĞÏîµÄË÷Òı   
+	// è·å–ç»„åˆæ¡†æ§ä»¶çš„åˆ—è¡¨æ¡†ä¸­é€‰ä¸­é¡¹çš„ç´¢å¼•   
 	nSel = m_scType.GetCurSel();
-	// ¸ù¾İÑ¡ÖĞÏîË÷Òı»ñÈ¡¸ÃÏî×Ö·û´®   
+	// æ ¹æ®é€‰ä¸­é¡¹ç´¢å¼•è·å–è¯¥é¡¹å­—ç¬¦ä¸²   
 	m_sel.GetLBText(nSel, strSel);
 }
 
@@ -730,10 +730,10 @@ void CTraction::OnCbnSelchangeSelPos()
 void CTraction::OnEnSetfocusSa()
 {
 	// TODO: Add your control notification handler code here
-	//ÌáÊ¾ÆøÅİ
+	//æç¤ºæ°”æ³¡
 	m_esa.ShowBalloonTip(
 		_T("USER"),
-		_T("¼û7588µÄ9.2.2£¬Ö»¼ÆËã4.1"),
+		_T("è§7588çš„9.2.2ï¼Œåªè®¡ç®—4.1"),
 		TTI_INFO);
 	
 }
@@ -792,10 +792,10 @@ void CTraction::OnEnChangeEdit11()
 void CTraction::OnEnSetfocusFmax()
 {
 	// TODO: Add your control notification handler code here
-	//ÌáÊ¾ÆøÅİ
+	//æç¤ºæ°”æ³¡
 	m_efmax.ShowBalloonTip(
 		_T("USER"),
-		_T("¿ÉÒÔÖ»¿¼ÂÇ¾²ÔØ"),
+		_T("å¯ä»¥åªè€ƒè™‘é™è½½"),
 		TTI_INFO);
 }
 
@@ -810,7 +810,7 @@ void CTraction::OnEnChangeH()
 	// TODO:  Add your control notification handler code here
 	UpdateData(TRUE);
 	CString str;
-	str = (m_h < 30) ? "Ñ¡0" : "²»Ñ¡0";
+	str = (m_h < 30) ? "é€‰0" : "ä¸é€‰0";
 	SetDlgItemText(IDC_STATIC_NC, str);
 	UpdateData(FALSE);
 }
@@ -821,7 +821,7 @@ void CTraction::OnEnSetfocusMc1()
 	// TODO: Add your control notification handler code here
 	m_emc1.ShowBalloonTip(
 		_T("USER"),
-		_T("ÀíÂÛ¼ÆËãµ¥Î»ÖØÁ¿£¬ÒÑÈ¥³ıµçÀÂ¡£"),
+		_T("ç†è®ºè®¡ç®—å•ä½é‡é‡ï¼Œå·²å»é™¤ç”µç¼†ã€‚"),
 		TTI_INFO);
 }
 
@@ -829,67 +829,236 @@ void CTraction::OnEnSetfocusMc1()
 void CTraction::OnBnClickedExport()
 {
 	// TODO: Add your control notification handler code here
-	//µ¼³ö
+	//å¯¼å‡º
 	
 	if (!app.CreateDispatch(_T("Excel.Application")))
 	{
-		this->MessageBox(_T("ÎŞ·¨´´½¨ExcelÓ¦ÓÃ£¡"));
+		this->MessageBox(_T("æ— æ³•åˆ›å»ºExcelåº”ç”¨ï¼"));
 		return;
 	}
 		/*CString strPath = CSelectFolderDlg::Show();
-		strPath += "Ò·ÒıÁ¦¼ÆËã.xls";*/
-		COleVariant covOptional((long)DISP_E_PARAMNOTFOUND, VT_ERROR);
-			books.AttachDispatch(app.get_Workbooks(), TRUE);
-			//book.AttachDispatch(books.Add(COleVariant(strPath)), TRUE);
-			book = books.Add(covOptional);
-			sheets = book.get_Worksheets();
-			sheet = sheets.get_Item(_variant_t("Sheet1")); // Get Sheet1
-			sheet.put_Name(_T("Ò·ÒıÁ¦¼ÆËã´òÓ¡°æ")); // ¸ÄÃû
+		strPath += "æ›³å¼•åŠ›è®¡ç®—.xls";*/
+		//COleVariant covOptional((long)DISP_E_PARAMNOTFOUND, VT_ERROR);
+		//	books.AttachDispatch(app.get_Workbooks(), TRUE);
+		//	//book.AttachDispatch(books.Add(COleVariant(strPath)), TRUE);
+		//	book = books.Add(covOptional);
+		//	sheets = book.get_Worksheets();
+		//	sheet = sheets.get_Item(_variant_t("Sheet1")); // Get Sheet1
+		//	sheet.put_Name(_T("æ›³å¼•åŠ›è®¡ç®—æ‰“å°ç‰ˆ")); // æ”¹å
 
 
-			range = sheet.get_Range(COleVariant(_T("A1")), COleVariant(_T("I1")));
-			range.Merge(_variant_t((long)0));//ºÏ²¢µ¥Ôª¸ñA1£ºI1
-			range.put_Value2(COleVariant(_T("µçÌİÒ·ÒıÁ¦¼°Ò·ÒıÉş°²È«ÏµÊı¼ÆËã±¨¸æ")));
-			//ÉèÖÃ×ÖÌåÎª´ÖÌå 
-			font = range.get_Font();
-			font.put_Italic(COleVariant((short)TRUE));
+		//	range = sheet.get_Range(COleVariant(_T("A1")), COleVariant(_T("A1")));
+		//	//range.Merge(_variant_t((long)0));//åˆå¹¶å•å…ƒæ ¼A1ï¼šI1
+		//	range.put_Value2(COleVariant(_T("ç”µæ¢¯æ›³å¼•åŠ›åŠæ›³å¼•ç»³å®‰å…¨ç³»æ•°è®¡ç®—æŠ¥å‘Š")));
+		//	//è®¾ç½®å­—ä½“ä¸ºç²—ä½“ 
+		//	font = range.get_Font();
+		//	font.put_Italic(COleVariant((short)TRUE));
+		////	font.put_Bold(COleVariant((short)TRUE));
 		//	font.put_Bold(COleVariant((short)TRUE));
-			font.put_Bold(_variant_t((long)1));
-		//	auto tmp=font.get_Bold();
-			font.put_FontStyle(COleVariant(_T("ËÎÌå")));
-			//tmp = font.get_FontStyle();
-			font.put_Size(COleVariant(_T("16")));
-			//tmp = font.get_Size();
-			app.put_Visible(TRUE);
-			app.put_UserControl(TRUE);
+		////	auto tmp=font.get_Bold();
+		//	font.put_FontStyle(COleVariant(_T("å®‹ä½“")));
+		//	//tmp = font.get_FontStyle();
+		//	font.put_Size(COleVariant(_T("16")));
+		//	//tmp = font.get_Size();
+		//	app.put_Visible(TRUE);
+		//	app.put_UserControl(TRUE);
 
 
-			// µÃµ½È«²¿Cells£¬´ËÊ±,rngXls ÊÇcellsµÄ¼¯ºÏ
-			//rngXls = wsSheetAcc.GetCells();
 		//books = app.get_Workbooks();
-		////´ò¿ªExcel£¬ÆäÖĞpathnameÎªExcel±íµÄÂ·¾¶Ãû  
+		////æ‰“å¼€Excelï¼Œå…¶ä¸­pathnameä¸ºExcelè¡¨çš„è·¯å¾„å  
 
 		//book = books.Add(covOptional);
 		//sheets = book.get_Worksheets();
-		//sheet = sheets.get_Item(COleVariant((short)1));  //»ñµÃ×ø±êÎª£¨A£¬1£©ºÍ£¨B£¬1£©µÄÁ½¸öµ¥Ôª¸ñ 
-		//range = sheet.get_Range(COleVariant(_T("A1")), COleVariant(_T("B1")));  //ÉèÖÃµ¥Ôª¸ñÀàÈİÎªHello Exce
-		//range.put_Value2(COleVariant(_T("Hello Excel")));  //Ñ¡ÔñÕûÁĞ£¬²¢ÉèÖÃ¿í¶ÈÎª×ÔÊÊÓ¦ 
+		//sheet = sheets.get_Item(COleVariant((short)1));  //è·å¾—åæ ‡ä¸ºï¼ˆAï¼Œ1ï¼‰å’Œï¼ˆBï¼Œ1ï¼‰çš„ä¸¤ä¸ªå•å…ƒæ ¼ 
+		//range = sheet.get_Range(COleVariant(_T("A1")), COleVariant(_T("B1")));  //è®¾ç½®å•å…ƒæ ¼ç±»å®¹ä¸ºHello Exce
+		//range.put_Value2(COleVariant(_T("Hello Excel")));  //é€‰æ‹©æ•´åˆ—ï¼Œå¹¶è®¾ç½®å®½åº¦ä¸ºè‡ªé€‚åº” 
 		//cols = range.get_EntireColumn();
 		//cols.AutoFit();
-		////ÉèÖÃ×ÖÌåÎª´ÖÌå 
+		////è®¾ç½®å­—ä½“ä¸ºç²—ä½“ 
 		//font = range.get_Font();
-		////font.put_Bold(COleVariant((short)TRUE));
+		//font.put_Bold(COleVariant((short)TRUE));
 		//font.put_Bold(COleVariant(_T("TRUE")));
-		////»ñµÃ×ø±êÎª£¨C£¬2£©µ¥Ôª¸ñ 
+		////è·å¾—åæ ‡ä¸ºï¼ˆCï¼Œ2ï¼‰å•å…ƒæ ¼ 
 		//range = sheet.get_Range(COleVariant(_T("C2")), COleVariant(_T("C2")));
-		////ÉèÖÃ¹«Ê½¡°=RAND()*100000¡±
+		////è®¾ç½®å…¬å¼â€œ=RAND()*100000â€
 		//range.put_Formula(COleVariant(_T("=RAND()*100000")));
-		////ÉèÖÃÊı×Ö¸ñÊ½Îª»õ±ÒĞÍ  
+		////è®¾ç½®æ•°å­—æ ¼å¼ä¸ºè´§å¸å‹  
 		//range.put_NumberFormat(COleVariant(_T("$0.00")));
-		////Ñ¡ÔñÕûÁĞ£¬²¢ÉèÖÃ¿í¶ÈÎª×ÔÊÊÓ¦  
+		////é€‰æ‹©æ•´åˆ—ï¼Œå¹¶è®¾ç½®å®½åº¦ä¸ºè‡ªé€‚åº”  
 		//cols = range.get_EntireColumn();
 		//cols.AutoFit();
-		////ÏÔÊ¾Excel±í
+		////æ˜¾ç¤ºExcelè¡¨
 		//app.put_Visible(TRUE);
 		//app.put_UserControl(TRUE);
+
+	COleVariant covOptional((long)DISP_E_PARAMNOTFOUND, VT_ERROR);
+
+	books.AttachDispatch(app.get_Workbooks());
+	book = books.Add(covOptional);
+	sheets.AttachDispatch(book.get_Sheets(), true);
+	sheet.AttachDispatch(sheets.get_Item(COleVariant((short)1)), TRUE);
+	range.AttachDispatch(sheet.get_Range(_variant_t("A1"), _variant_t("I112")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("é»‘ä½“"));
+	font.put_Size(COleVariant(_T("11")));
+	//ç¬¬ä¸€è¡Œ
+	range.AttachDispatch(sheet.get_Range(_variant_t("A1"), _variant_t("I1")), TRUE);
+	range.Merge(_variant_t((long)0));//åˆå¹¶å•å…ƒæ ¼A1ï¼šI1
+	range.put_Item(_variant_t((long)1), _variant_t((long)1), COleVariant(_T("ç”µæ¢¯æ›³å¼•åŠ›åŠæ›³å¼•ç»³å®‰å…¨ç³»æ•°è®¡ç®—æŠ¥å‘Š")));//å†™å…¥
+	//range = range.get_EntireColumn();
+	//range.put_ColumnWidth(_variant_t((long)22));//è®¾ç½®å•å…ƒæ ¼å®½åº¦
+	range.put_HorizontalAlignment(_variant_t((long)-4108));//å±…ä¸­
+	font = range.get_Font();
+	font.put_Name(_variant_t("å®‹ä½“"));
+	font.put_Bold(COleVariant((short)TRUE));
+	font.put_Size(COleVariant(_T("16")));
+	//ç¬¬äºŒè¡Œ
+	range2.AttachDispatch(sheet.get_Range(_variant_t("A2"), _variant_t("I2")), TRUE);
+	range2.Merge(_variant_t((long)0));//åˆå¹¶å•å…ƒæ ¼A2ï¼šI2
+	CString s_q, s_v, s_p, s_h, s_psi, s_gn, s_a, s_r, s_qs, s_dr, s_ns, s_qc, s_nc, s_mc, s_qt, s_nt, s_alpha, s_beta, s_gama, s_miu1, s_miu2, s_miu3, s_f1, s_f2, s_f3, s_ef1, s_ef2, s_ef3;
+	s_q.Format(_T("%d"), m_q);
+	s_v.Format(_T("%d"), m_v);
+	s_p.Format(_T("%d"), m_p);
+	s_h.Format(_T("%d"), m_h);
+	s_psi.Format(_T("%.3f"), m_psi);
+	s_gn.Format(_T("%.3f"), m_gn);
+	s_a.Format(_T("%.3f"), m_a);
+	s_r.Format(_T("%d"), m_r);
+	s_r += "ï¼š1";
+	s_qs.Format(_T("%.3f"), m_qs);
+	s_dr.Format(_T("%.3f"), m_dr);
+	s_ns.Format(_T("%d"), m_ns);
+	s_qc.Format(_T("%.3f"), m_qc);
+	s_nc.Format(_T("%d"), m_nc);
+	s_mc.Format(_T("%.3f"), m_mc);
+	s_qt.Format(_T("%.3f"), m_qt);
+	s_nt.Format(_T("%d"), m_nt);
+	s_alpha.Format(_T("%.3f"), m_alpha);
+	s_beta.Format(_T("%.3f"), m_beta);
+	s_gama.Format(_T("%.3f"), m_gama);
+	s_miu1.Format(_T("%.3f"), m_miu1);
+	s_miu2.Format(_T("%.3f"), m_miu2);
+	s_miu3.Format(_T("%.3f"), m_miu3);
+	s_f1.Format(_T("%.3f"), m_f1);
+	s_f2.Format(_T("%.3f"), m_f2);
+	s_f3.Format(_T("%.3f"), m_f3);
+	s_ef1.Format(_T("%.3f"), m_ef1);
+	s_ef2.Format(_T("%.3f"), m_ef2);
+	s_ef3.Format(_T("%.3f"), m_ef3);
+	range2.put_Item(_variant_t((long)1), _variant_t((long)1), COleVariant(_T("KLK1/VF "+s_q+"/"+s_v)));//å†™å…¥
+	//range2 = range2.get_EntireColumn();
+	//range.put_ColumnWidth(_variant_t((long)22));//è®¾ç½®å•å…ƒæ ¼å®½åº¦
+	range2.put_HorizontalAlignment(_variant_t((long)-4108));//å±…ä¸­
+	//range2._BorderAround(_variant_t((long)6), _variant_t((long)2), _variant_t((long)-4105), vtMissing);
+	font2 = range2.get_Font();
+	font2.put_Bold(COleVariant((short)FALSE));
+	font2.put_Name(_variant_t("å®‹ä½“"));
+	font2.put_Size(COleVariant(_T("16")));
+	//ç¬¬ä¸‰è¡Œ
+	range.AttachDispatch(sheet.get_Range(_variant_t("A3"), _variant_t("B3")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.put_Item(_variant_t((long)1), _variant_t((long)1), COleVariant(_T("ä¸€ã€æ›³å¼•åŠ›è®¡ç®—")));//å†™å…¥
+	font = range.get_Font();
+	//font.put_Name(_variant_t("é»‘ä½“"));
+	font.put_Size(COleVariant(_T("12")));
+	//ç¬¬å››è¡Œ
+	range.AttachDispatch(sheet.get_Range(_variant_t("A4"), _variant_t("C4")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.put_Item(_variant_t((long)1), _variant_t((long)1), COleVariant(_T("1.1 æ›³å¼•åŠ›è®¡ç®—å‚æ•°è¡¨")));//å†™å…¥
+	font = range.get_Font();
+	//font.put_Name(_variant_t("é»‘ä½“"));
+	font.put_Size(COleVariant(_T("12")));
+	//äº”åˆ°ä¸‰åå››è¡Œ
+	range.AttachDispatch(sheet.get_Cells(), TRUE);//åŠ è½½æ‰€æœ‰å•å…ƒæ ¼   
+	vector<CString> svec1 = { _T("é¢å®šè½½é‡é‡Q"), _T("è½¿å¢è‡ªé‡P"), _T("é¢å®šé€Ÿåº¦v"), _T("æå‡é«˜åº¦H"), _T("å¹³è¡¡ç³»æ•°Ïˆ"), _T("é‡åŠ›åŠ é€Ÿåº¦gn"), _T("è½¿å¢åˆ¶åŠ¨å‡é€Ÿåº¦a"),
+		_T("æ›³å¼•æ¯”r"), _T("æ›³å¼•ç»³æ¯”é‡qs"), _T("æ›³å¼•ç»³ç›´å¾„dr"), _T("æ›³å¼•ç»³æ•°é‡ns"), _T("è¡¥å¿é“¾(ç»³)æ¯”é‡qc"), _T("è¡¥å¿é“¾(ç»³)æ•°é‡nc"), _T("å¼ ç´§è£…ç½®åŒ…æ‹¬æ»‘è½®çš„é‡é‡Mc"), 
+		_T("éšè¡Œç”µç¼†æ¯”é‡qt"), _T("éšè¡Œç”µç¼†æ•°é‡nt"), _T("æ›³å¼•ç»³åœ¨æ›³å¼•è½®ä¸Šçš„åŒ…è§’ä¸ºÎ±"), _T("ç»³æ§½ç±»å‹"), _T("Vå½¢æ§½é™„åŠ å¤„ç†"), _T("ä¸‹éƒ¨åˆ‡å£è§’åº¦å€¼Î²"), _T("æ§½çš„è§’åº¦å€¼Î³"),
+		_T("è£…è½½å·¥å†µÎ¼1"), _T("ç´§æ€¥åˆ¶åœå·¥å†µÎ¼2"), _T("è½¿å¢æ»ç•™å·¥å†µÎ¼3"), _T("å½“é‡æ‘©æ“¦ç³»æ•°f1"), _T("å½“é‡æ‘©æ“¦ç³»æ•°f2"), _T("å½“é‡æ‘©æ“¦ç³»æ•°f3"), _T("è®¸ç”¨æ›³å¼•æ¯”ef1Î±"),
+		_T("è®¸ç”¨æ›³å¼•æ¯”ef2Î±"), _T("è®¸ç”¨æ›³å¼•æ¯”ef2Î±") }, 
+		svec2 = { s_q, s_p, s_v, s_h, s_psi, s_gn, s_a, s_r, s_qs, s_dr, s_ns, s_qc, s_nc, s_mc, s_qt, s_nt, s_alpha, strWeb, strPro, s_beta, s_gama, s_miu1, s_miu2, s_miu3, s_f1, s_f2, s_f3, s_ef1, s_ef2, s_ef3 },
+		svec3 = { _T("kg"), _T("kg"), _T("m/s"), _T("m"), _T(""), _T("m/sÂ²"), _T("m/sÂ²"), _T(""), _T("kg/m"), _T("mm"), _T(""), _T("kg/m"), _T(""), _T("kg"),
+		_T("kg/m"), _T(""), _T("Â°"), _T(""), _T(""), _T("Â°"), _T("Â°"), _T(""), _T(""), _T(""), _T(""), _T(""), _T(""), _T("1max"), _T("2max"), _T("3min")};
+	for (auto i = 5; i <= 34; ++i)
+	{
+		range.put_Item(COleVariant((long)i), COleVariant((long)4), COleVariant(svec1[i-5]));
+		range.put_Item(COleVariant((long)i), COleVariant((long)5), COleVariant(svec2[i - 5]));
+		range.put_Item(COleVariant((long)i), COleVariant((long)6), COleVariant(svec3[i - 5]));
+	}
+	//æ›³å¼•æ¯”
+	range = sheet.get_Range(COleVariant(_T("E12")), COleVariant(_T("E12")));
+	range.put_NumberFormat(COleVariant(_T("@1")));
+	//
+	range.AttachDispatch(sheet.get_Range(_variant_t("B5"), _variant_t("D34")), TRUE);
+	range.put_HorizontalAlignment(_variant_t((long)-4152));//å³å¯¹é½
+	font = range.get_Font();
+	//font.put_Name(_variant_t("é»‘ä½“"));
+	font.put_Size(COleVariant(_T("11")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("E5"), _variant_t("E34")), TRUE);
+	range2.put_HorizontalAlignment(_variant_t((long)-4108));//å±…ä¸­
+	range.AttachDispatch(sheet.get_Range(_variant_t("C5"), _variant_t("D5")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C9"), _variant_t("D9")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C10"), _variant_t("D10")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C11"), _variant_t("D11")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C12"), _variant_t("D12")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C13"), _variant_t("D13")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C14"), _variant_t("D14")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C15"), _variant_t("D15")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C16"), _variant_t("D16")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C17"), _variant_t("D17")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("B18"), _variant_t("D18")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C19"), _variant_t("D19")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C20"), _variant_t("D20")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("B21"), _variant_t("D21")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C14"), _variant_t("D14")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C23"), _variant_t("D23")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C24"), _variant_t("D24")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C25"), _variant_t("D25")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C26"), _variant_t("D26")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C27"), _variant_t("D27")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C28"), _variant_t("D28")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C29"), _variant_t("D29")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C30"), _variant_t("D30")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C31"), _variant_t("D31")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C32"), _variant_t("D32")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C33"), _variant_t("D33")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C34"), _variant_t("D34")), TRUE);
+	range.Merge(_variant_t((long)0));
+	app.put_Visible(TRUE);
+	app.put_UserControl(TRUE);
 }
+
+//void CTraction::StringFormat(double m_aa)
+//{
+//	float naa = m_aa;
+//	CString str;
+//	str.Format(_T("%.3f"), naa);
+//	m_aa = _tstof(str.GetBuffer());
+//	str.ReleaseBuffer();
+//	//return m_aa;
+//}

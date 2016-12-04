@@ -28,14 +28,14 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
-	double m_q;
-	double m_p;
-	double m_v;
-	double m_h;
+	int m_q;
+	int m_p;
+	int m_v;
+	int m_h;
 	double m_psi;
 	double m_gn;
 	double m_a;
-	double m_r;
+	int m_r;
 	double m_qs;
 	double m_dr;
 	int m_ns;
@@ -183,8 +183,8 @@ public:
 	CWorkbooks books;
 	CWorksheet sheet;
 	CWorksheets sheets;
-	CRange range;
-	CFont0 font;
+	CRange range,range2;
+	CFont0 font,font2;
 	CRange cols;
 	LPDISPATCH lpDisp;
 };

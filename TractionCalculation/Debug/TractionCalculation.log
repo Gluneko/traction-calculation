@@ -1,4 +1,4 @@
-﻿Build started 2016/12/3 11:54:42.
+﻿Build started 2016/12/4 22:20:57.
      1>Project "E:\projects\TractionCalculation\TractionCalculation\TractionCalculation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\TractionCalculation.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Traction.cpp
@@ -23,4 +23,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:19.64
+Time Elapsed 00:00:09.04
