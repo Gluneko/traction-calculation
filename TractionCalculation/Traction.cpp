@@ -203,7 +203,7 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_MPTD, m_mmptd);
 	DDX_Control(pDX, IDC_SEL_POS, m_sel);
 	DDX_Control(pDX, IDC_SA, m_esa);
-	DDX_Text(pDX, IDC_DR3, m_ddr);
+	//DDX_Text(pDX, IDC_DR3, m_ddr);
 	DDX_Text(pDX, IDC_DTDR, m_dtdr);
 	DDX_Text(pDX, IDC_SF, m_sf);
 	DDX_Text(pDX, IDC_SA, m_sa);
@@ -924,7 +924,7 @@ void CTraction::OnBnClickedExport()
 	s_gn.Format(_T("%.3f"), m_gn);
 	s_a.Format(_T("%.3f"), m_a);
 	s_r.Format(_T("%d"), m_r);
-	s_r += "：1";
+	//s_r += "：1";
 	s_qs.Format(_T("%.3f"), m_qs);
 	s_dr.Format(_T("%.3f"), m_dr);
 	s_ns.Format(_T("%d"), m_ns);
@@ -984,9 +984,9 @@ void CTraction::OnBnClickedExport()
 		range.put_Item(COleVariant((long)i), COleVariant((long)5), COleVariant(svec2[i - 5]));
 		range.put_Item(COleVariant((long)i), COleVariant((long)6), COleVariant(svec3[i - 5]));
 	}
-	//曳引比
-	range = sheet.get_Range(COleVariant(_T("E12")), COleVariant(_T("E12")));
-	range.put_NumberFormat(COleVariant(_T("@1")));
+	////曳引比
+	//range = sheet.get_Range(COleVariant(_T("E12")), COleVariant(_T("E12")));
+	//range.put_NumberFormat(COleVariant(_T("@1")));
 	//
 	range.AttachDispatch(sheet.get_Range(_variant_t("B5"), _variant_t("D34")), TRUE);
 	range.put_HorizontalAlignment(_variant_t((long)-4152));//右对齐
@@ -1049,16 +1049,96 @@ void CTraction::OnBnClickedExport()
 	range.Merge(_variant_t((long)0));
 	range.AttachDispatch(sheet.get_Range(_variant_t("C34"), _variant_t("D34")), TRUE);
 	range.Merge(_variant_t((long)0));
+	//38-70行
+	vector<CString> svec4 = { _T("T1="), _T("T2="), _T("T1/T2=max/min="), _T("T1/T2")},
+		svec5 = { m_res11,m_res12,m_res21,m_res22,m_res23,m_res24,m_res31,m_res32};
+	vector<int> ivec1 = {40,45,52,57,62,67,74,79};
+	vector<double> dvec1 = { m_t11, m_t21, m_t1dt21, m_t112, m_t212, m_t1dt212, m_t121, m_t221, m_t1dt221, m_t122, m_t222, m_t1dt222, m_t123, m_t223, m_t1dt223,
+		m_t124, m_t224, m_t1dt224, m_t131, m_t231, m_t1dt231, m_t132, m_t232, m_t1dt232 };
+	range.AttachDispatch(sheet.get_Cells(), TRUE);//加载所有单元格
+	for (auto i = 0; i < ivec1.size(); ++i)
+	{
+		for (auto j = 0; j < 4; ++j)
+		{
+			range.put_Item(COleVariant((long)ivec1[i]+j), COleVariant((long)4), COleVariant(svec4[j]));
+		}
+		for (auto k = 0; k < 3; ++k)
+		{
+			range.put_Item(COleVariant((long)ivec1[i] + k), COleVariant((long)5), COleVariant(dvec1[i*3+k]));
+		}
+		range.put_Item(COleVariant((long)ivec1[i] + 3), COleVariant((long)7), COleVariant(svec5[i]));
+		range.put_Item(COleVariant((long)ivec1[i] + 3), COleVariant((long)6), COleVariant(_T("ef1α")));
+		range.put_Item(COleVariant((long)ivec1[i] + 3), COleVariant((long)5), COleVariant((svec5[i]=="通过")?_T("<"):_T(">")));
+	}
+	
+	
+
+	range.put_Item(COleVariant((long)38), COleVariant((long)1), COleVariant(_T("1.2 轿厢装载工况")));
+	range.put_Item(COleVariant((long)39), COleVariant((long)1), COleVariant(_T("1.2.1 装有125%额定载重量的轿厢位于最底层时")));
+	range.put_Item(COleVariant((long)44), COleVariant((long)1), COleVariant(_T("1.2.2 装有125%额定载重量的轿厢位于最高层时")));
+	range.put_Item(COleVariant((long)50), COleVariant((long)1), COleVariant(_T("1.3 紧急制停工况")));
+	range.put_Item(COleVariant((long)51), COleVariant((long)1), COleVariant(_T("1.3.1 装有额定载重量的轿厢位于最底层下行急停时")));
+	range.put_Item(COleVariant((long)56), COleVariant((long)1), COleVariant(_T("1.3.2 空载重量的轿厢位于最高层上行急停时")));
+	range.put_Item(COleVariant((long)61), COleVariant((long)1), COleVariant(_T("1.3.3 装有额定载重量的轿厢位于最高层下行急停时")));
+	range.put_Item(COleVariant((long)66), COleVariant((long)1), COleVariant(_T("1.3.4 空载重量的轿厢位于最底层上行急停时")));
+	range.put_Item(COleVariant((long)72), COleVariant((long)1), COleVariant(_T("1.4 轿厢滞留工况")));
+	range.put_Item(COleVariant((long)73), COleVariant((long)1), COleVariant(_T("1.4.1 轿厢为空载时，对重压在缓冲器上曳引机向上方向旋转时")));
+	range.put_Item(COleVariant((long)78), COleVariant((long)1), COleVariant(_T("1.4.2 轿厢压在缓冲器上曳引机旋转提升对重")));
+	range.put_Item(COleVariant((long)84), COleVariant((long)1), COleVariant(_T("二、曳引绳安全系数计算")));
+	range.put_Item(COleVariant((long)85), COleVariant((long)1), COleVariant(_T("2.1 曳引绳安全系数计算参数表")));
+	range.put_Item(COleVariant((long)95), COleVariant((long)1), COleVariant(_T("2.2 曳引绳实际安全系数")));
+	range.put_Item(COleVariant((long)96), COleVariant((long)1), COleVariant(_T("2.2.1 装有额定载重量的轿厢位于最底层时，在曳引轮水平面上钢丝绳静拉力")));
+	range.put_Item(COleVariant((long)98), COleVariant((long)1), COleVariant(_T("2.2.2 曳引钢丝绳实际安全系数")));
+	range.put_Item(COleVariant((long)102), COleVariant((long)1), COleVariant(_T("三、曳引绳比压计算")));
+	range.put_Item(COleVariant((long)103), COleVariant((long)1), COleVariant(_T("3.1 比压pmax许用最大值")));
+	range.put_Item(COleVariant((long)105), COleVariant((long)1), COleVariant(_T("3.2 实际比压p，曳引轮槽型为带切口的半圆槽")));
+	range.put_Item(COleVariant((long)109), COleVariant((long)1), COleVariant(_T("四、计算结果汇总")));
+
+	CString s_ns;
+	s_ns.Format(_T("%d"), m_ns);
+	vector<CString> svec5 = { _T("计算轿厢侧或对重侧"), _T("滑轮的等效数量Nequiv"), _T("曳引轮直径Dt"), _T("曳引绳直径dr"), _T("曳引绳数量ns"), _T("曳引绳最小破断载荷dr"), _T("曳引轮绳径比Dt/dr"), _T("曳引钢丝绳最小安全系数Sf") },
+		svec6 = { strSel, StringFormat(m_ne), StringFormat(m_dt), StringFormat(m_dr), s_ns, StringFormat(m_ddr), StringFormat(m_dtdr), StringFormat(m_sf) },
+		svec7 = { _T(""), _T(""), _T("mm"), _T("mm"), _T(""), _T("kN"), _T(""), _T("") };
+	for (auto i = 0; i < svec5.size(); ++i)
+	{
+		range.put_Item(COleVariant((long)86+i), COleVariant((long)4), COleVariant(svec5[i]));
+		range.put_Item(COleVariant((long)86 + i), COleVariant((long)5), COleVariant(svec6[i]));
+	}
+	range.put_Item(COleVariant((long)97), COleVariant((long)4), COleVariant(_T("T=")));
+	range.put_Item(COleVariant((long)99), COleVariant((long)4), COleVariant(_T("TSa=ns×dr/T==")));
+	range.put_Item(COleVariant((long)100), COleVariant((long)4), COleVariant(_T("Sf")));
+	range.put_Item(COleVariant((long)104), COleVariant((long)4), COleVariant(_T("pmax=")));
+	range.put_Item(COleVariant((long)106), COleVariant((long)4), COleVariant(_T("p=")));
+	range.put_Item(COleVariant((long)107), COleVariant((long)4), COleVariant(_T("p")));
+	range.put_Item(COleVariant((long)110), COleVariant((long)4), COleVariant(_T("曳引力：")));
+	range.put_Item(COleVariant((long)111), COleVariant((long)4), COleVariant(_T("曳引绳安全系数：")));
+	range.put_Item(COleVariant((long)112), COleVariant((long)4), COleVariant(_T("曳引绳比压：")));
+	
+	range.put_Item(COleVariant((long)97), COleVariant((long)5), COleVariant(StringFormat(m_t141)));
+	range.put_Item(COleVariant((long)99), COleVariant((long)5), COleVariant(StringFormat(m_sa)));
+	range.put_Item(COleVariant((long)100), COleVariant((long)5), COleVariant((m_safeRes == "通过") ? _T("<") : _T(">")));
+	range.put_Item(COleVariant((long)104), COleVariant((long)5), COleVariant(StringFormat(m_p4)));
+	range.put_Item(COleVariant((long)106), COleVariant((long)5), COleVariant(StringFormat(m_pp)));
+	range.put_Item(COleVariant((long)107), COleVariant((long)5), COleVariant((m_res43 == "通过") ? _T("<") : _T(">")));
+	range.put_Item(COleVariant((long)110), COleVariant((long)5), COleVariant(_T("曳引力：")));
+	range.put_Item(COleVariant((long)111), COleVariant((long)5), COleVariant(_T("曳引绳安全系数：")));
+	range.put_Item(COleVariant((long)112), COleVariant((long)5), COleVariant(_T("曳引绳比压：")));
+
+
+	range = sheet.get_Range(COleVariant(_T("E110")), COleVariant(_T("E110")));
+	range.put_Formula(COleVariant(_T("=IF(COUNTIF(G40:G82,\"通过\")=8,\"通过\",\"不通过\")")));
+	range = sheet.get_Range(COleVariant(_T("E111")), COleVariant(_T("E111")));
+	range.put_Formula(COleVariant(_T("=G100")));
+	range = sheet.get_Range(COleVariant(_T("E112")), COleVariant(_T("E112")));
+	range.put_Formula(COleVariant(_T("=G107")));
 	app.put_Visible(TRUE);
 	app.put_UserControl(TRUE);
 }
 
-//void CTraction::StringFormat(double m_aa)
-//{
-//	float naa = m_aa;
-//	CString str;
-//	str.Format(_T("%.3f"), naa);
-//	m_aa = _tstof(str.GetBuffer());
-//	str.ReleaseBuffer();
-//	//return m_aa;
-//}
+CString CTraction::StringFormat(double m_aa)
+{
+	float naa = m_aa;
+	CString str;
+	str.Format(_T("%.3f"), naa);
+	return str;
+}

@@ -187,4 +187,5 @@ public:
 	CFont0 font,font2;
 	CRange cols;
 	LPDISPATCH lpDisp;
+	CString StringFormat(double m_aa);
 };
