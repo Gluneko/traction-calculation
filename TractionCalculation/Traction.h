@@ -157,8 +157,10 @@ public:
 	afx_msg void OnEnChangeH();
 	double m_mc1;
 	double m_mc2;
-	double m_mc3;
-	double m_mc4;
+	CString m_mc3;
+	CString m_mc4;
+	double m_dr2;
+	double m_ns2;
 	afx_msg void OnEnSetfocusMc1();
 	CEdit m_emc1;
 	CString m_res11;

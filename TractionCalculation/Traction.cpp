@@ -106,13 +106,46 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	, m_t1mt212(0)
 	, m_mc1(0)
 	, m_mc2(0)
-	, m_mc3(0)
-	, m_mc4(0)
+	, m_mc3(_T(""))
+	, m_mc4(_T(""))
 	, m_res(_T(""))
 	, m_num(0)
 	, m_ropeRes(_T(""))
 	, m_pRes(_T(""))
 {
+	//测试
+	m_q=3000;
+	m_p=2400;
+	m_v=1;
+	m_h=30;
+	m_psi=0.48;
+	m_gn=9.81;
+	m_a=0.5;
+	m_r=2;
+	m_qs=0.569;
+	m_dr=13;
+	m_ns=7;
+	m_qc=3.73;
+	m_nc=2;
+	m_mc=0;
+	m_qtcwt=0;
+	m_nt=1;
+	m_alpha=180;
+	m_beta=96.5;
+	m_gama=30;
+	m_miu1=0.1;
+	m_miu3=0.2;
+	m_mdp=0;
+	m_npcar=0;
+	m_mpcar=12;
+	m_npcwt=0;
+	m_mpcwt=15;
+	m_nptd=0;
+	m_mptd=15;
+	m_ddr=55.9;
+	m_dt=450;
+	m_ne=8.5217;
+	//
 	m_w_radio=0;
 	m_w_dt = 410;
 	m_w_ddp=400;
@@ -124,7 +157,7 @@ CTraction::CTraction(CWnd* pParent /*=NULL*/)
 	strPro = "硬化处理";
 	strPos = "对重侧";
 	strSel = "轿厢侧";
-	m_ne = 0;
+	//m_ne = 0;
 }
 
 CTraction::~CTraction()
@@ -153,10 +186,10 @@ void CTraction::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_QS, m_qs);
 	DDV_MinMaxDouble(pDX, m_qs, 0, 1e+30);
 	DDX_Text(pDX, IDC_DR, m_dr);
-	DDX_Text(pDX, IDC_DR2, m_dr);
+	DDX_Text(pDX, IDC_DR2, m_dr2);
 	DDV_MinMaxDouble(pDX, m_dr, 0, 1e+30);
 	DDX_Text(pDX, IDC_NS, m_ns);
-	DDX_Text(pDX, IDC_NS2, m_ns);
+	DDX_Text(pDX, IDC_NS2, m_ns2);
 	DDV_MinMaxInt(pDX, m_ns, 0, 2147483647);
 	DDX_Text(pDX, IDC_NC, m_nc);
 	DDV_MinMaxInt(pDX, m_nc, 0, 2147483647);
@@ -569,10 +602,13 @@ void CTraction::OnBnClickedBtnCalc()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
-	double r_beta = m_beta / pi * 180;
-	double r_gama = m_gama / pi * 180;
-	double r_alpha = m_alpha / pi * 180;
-	m_miu2 = 0.1 / (1+m_r*m_v/10);
+	
+	m_dr2 = m_dr;
+	m_ns2 = m_ns;
+	double r_beta = m_beta * pi / 180;
+	double r_gama = m_gama * pi / 180;
+	double r_alpha = m_alpha * pi / 180;
+	m_miu2 = 0.1 / (1+m_r*m_v/10.0);
 	if (strWeb == "半圆槽")
 	{
 		m_f1 = m_miu1 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi-r_beta-r_gama-sin(r_beta)+sin(r_gama));
@@ -591,6 +627,7 @@ void CTraction::OnBnClickedBtnCalc()
 		m_f2 = 0;
 		m_f3 = 0;
 	}
+	
 	m_ef1 = exp(m_f1*r_alpha);
 	m_ef2 = exp(m_f2*r_alpha);
 	m_ef3 = exp(m_f3*r_alpha);
@@ -599,13 +636,14 @@ void CTraction::OnBnClickedBtnCalc()
 	m_mmpcwt = m_npcwt*0.6*m_mpcwt;
 	m_mmptd = m_nptd*0.6*m_mptd;
 	m_dtdr = m_dt / m_dr;
-	m_sf=max(pow(10, (2.6834 - log10(695.85 * 1000000 * m_ne / pow(m_dtdr,8.567))) / log10(77.09*pow(m_dtdr, -2.894))), m_beta == 2 ? 16 : 12);
-	m_sa=m_ns*m_ddr * 1000 / m_t141;
-	m_pp = m_t141 / (m_ns*m_ddr*m_dt)*((strWeb == "V形槽") && (r_beta == 0) ? 4.5 / sin(r_gama / 2) : 8 * cos(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+	double tmp1 = pow(10, 2.6834 - log10(695.85 * 1000000 * m_ne / pow(m_dtdr,8.567)) / log10(77.09*pow(m_dtdr, -2.894)));
+	m_sf=max(tmp1, m_beta == 2 ? 16 : 12);
+	
+	m_qt = m_h > 80 ? 1.0943 : 0.8513;
 	m_rope = m_ns*m_r*m_qs*m_h;
 	m_chain = m_nc*m_qc*m_h;
 	m_cable = m_nt*m_qt*m_h / 2;
-	m_qt = m_h > 80 ? 1.0943 : 0.8513;
+	
 	m_t11 = ((m_p + 1.25*m_q + m_mc / 2) / m_r + m_qs*m_ns*m_h)*m_gn;
 	m_t21 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_mc / 2 + m_qtcwt*m_h / 2) / m_r*m_gn;
 	m_t112 = (m_p + 1.25*m_q + m_mc / 2 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*m_gn;
@@ -641,15 +679,22 @@ void CTraction::OnBnClickedBtnCalc()
 	m_t1mt231 = abs(m_t131 - m_t231);
 	m_t1dt232 = max(m_t132, m_t232) / min(m_t132, m_t232);
 	m_t1mt232 = abs(m_t132 - m_t232);
+
+	
+
 	m_fmax = (m_alpha > 180 ? 2 : 1)*max(m_t11 + m_t21, m_t112 + m_t212) / m_gn;
+	m_pp = m_t141 / (m_ns*m_ddr*m_dt)*((strWeb == "V形槽") && (r_beta == 0) ? 4.5 / sin(r_gama / 2) : 8 * cos(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+	m_sa = m_ns*m_ddr * 1000 / m_t141;
 	vector<double> vec1 = { m_t1mt21, m_t1mt212, m_t1mt221, m_t1mt222, m_t1mt223, m_t1mt224 },
 		vec2 = { m_t1mt231, m_t1mt232 };
 	m_t10=MaxAll(vec1)*m_dt / 2 / 1000;
 	m_t20 = MaxAll(vec2)*m_dt / 2 / 1000;
 	m_mc1 = m_ns*m_qs*m_r - m_nt*m_qt / 4;
 	m_mc2 = m_qc*m_nc / m_nc;
-	m_mc3 = m_qc*m_nc / (m_ns*m_qs*m_r);
-	m_mc4 = m_nc*m_qc / m_mc1;
+	double d3, d4;
+	d3 = m_qc*m_nc / (m_ns*m_qs*m_r);
+	d4 = m_nc*m_qc / m_mc1;
+
 	m_res11 = (m_t1dt21 <= m_ef1)?"通过":"不通过";
 	m_res12 = (m_t1dt212 <= m_ef1) ? "通过" : "不通过";
 	m_res21 = (m_t1dt221 <= m_ef2) ? "通过" : "不通过";
@@ -673,6 +718,75 @@ void CTraction::OnBnClickedBtnCalc()
 			++m_num;
 		}
 	}
+		NumFormat(m_dr2);
+		NumFormat(m_ns2);
+		NumFormat(m_miu2);
+		NumFormat(m_f1);
+		NumFormat(m_f2);
+		NumFormat(m_f3);
+		NumFormat(m_ef1);
+		NumFormat(m_ef2);
+		NumFormat(m_ef3);
+		NumFormat(m_mmdp);
+		NumFormat(m_mmpcar);
+		NumFormat(m_mmpcwt);
+		NumFormat(m_mmptd);
+		NumFormat(m_dtdr);
+		NumFormat(m_sf);
+		NumFormat(m_qt);
+		NumFormat(m_rope);
+		NumFormat(m_chain);
+		NumFormat(m_cable);
+		NumFormat(m_t11);
+		NumFormat(m_t21);
+		NumFormat(m_t112);
+		NumFormat(m_t212);
+		NumFormat(m_t121);
+		NumFormat(m_t221);
+		NumFormat(m_t122);
+		NumFormat(m_t222);
+		NumFormat(m_t123);
+		NumFormat(m_t223);
+		NumFormat(m_t124);
+		NumFormat(m_t224);
+		NumFormat(m_t131);
+		NumFormat(m_t231);
+		NumFormat(m_t132);
+		NumFormat(m_t232);
+		NumFormat(m_t141);
+		NumFormat(m_t242);
+		NumFormat(m_p4);
+		NumFormat(m_t1dt21);
+		NumFormat(m_t1mt21);
+		NumFormat(m_t1dt212);
+		NumFormat(m_t1mt212);
+	NumFormat(m_t1dt221);
+	NumFormat(m_t1mt221);
+	NumFormat(m_t1dt222);
+	NumFormat(m_t1mt222);
+	NumFormat(m_t1dt223);
+	NumFormat(m_t1mt223);
+	NumFormat(m_t1dt224);
+	NumFormat(m_t1mt224);
+	NumFormat(m_t1dt231);
+	NumFormat(m_t1mt231);
+	NumFormat(m_t1dt232);
+	NumFormat(m_t1mt232);
+	NumFormat(m_fmax);
+	NumFormat(m_pp);
+	NumFormat(m_sa);
+	NumFormat(m_t10);
+	NumFormat(m_t20);
+	NumFormat(m_mc1);
+	NumFormat(m_mc2);
+	//NumFormat(m_mc3);
+	//NumFormat(m_mc4);
+	d3 *=100;
+	d4 *=100;
+	m_mc3.Format(_T("%.2f"), d3);
+	m_mc4.Format(_T("%.2f"), d4);
+	m_mc3 += "%";
+	m_mc4 += "%";
 	GetDlgItem(IDC_EXPORT)->EnableWindow(TRUE);
 	OnPaint();
 	UpdateData(FALSE);
@@ -836,8 +950,8 @@ void CTraction::OnBnClickedExport()
 		this->MessageBox(_T("无法创建Excel应用！"));
 		return;
 	}
-		/*CString strPath = CSelectFolderDlg::Show();
-		strPath += "曳引力计算.xls";*/
+		CString strPath = CSelectFolderDlg::Show();
+		strPath += "\\曳引力计算.xls";
 		//COleVariant covOptional((long)DISP_E_PARAMNOTFOUND, VT_ERROR);
 		//	books.AttachDispatch(app.get_Workbooks(), TRUE);
 		//	//book.AttachDispatch(books.Add(COleVariant(strPath)), TRUE);
@@ -899,7 +1013,7 @@ void CTraction::OnBnClickedExport()
 	sheet.AttachDispatch(sheets.get_Item(COleVariant((short)1)), TRUE);
 	range.AttachDispatch(sheet.get_Range(_variant_t("A1"), _variant_t("I112")), TRUE);
 	font = range.get_Font();
-	font.put_Name(_variant_t("黑体"));
+	font.put_Name(_variant_t("Arial"));
 	font.put_Size(COleVariant(_T("11")));
 	//第一行
 	range.AttachDispatch(sheet.get_Range(_variant_t("A1"), _variant_t("I1")), TRUE);
@@ -924,7 +1038,7 @@ void CTraction::OnBnClickedExport()
 	s_gn.Format(_T("%.3f"), m_gn);
 	s_a.Format(_T("%.3f"), m_a);
 	s_r.Format(_T("%d"), m_r);
-	//s_r += "：1";
+	s_r = _T("\"") + s_r + _T("：1\"");
 	s_qs.Format(_T("%.3f"), m_qs);
 	s_dr.Format(_T("%.3f"), m_dr);
 	s_ns.Format(_T("%d"), m_ns);
@@ -959,14 +1073,14 @@ void CTraction::OnBnClickedExport()
 	range.Merge(_variant_t((long)0));
 	range.put_Item(_variant_t((long)1), _variant_t((long)1), COleVariant(_T("一、曳引力计算")));//写入
 	font = range.get_Font();
-	//font.put_Name(_variant_t("黑体"));
+	font.put_Name(_variant_t("黑体"));
 	font.put_Size(COleVariant(_T("12")));
 	//第四行
 	range.AttachDispatch(sheet.get_Range(_variant_t("A4"), _variant_t("C4")), TRUE);
 	range.Merge(_variant_t((long)0));
 	range.put_Item(_variant_t((long)1), _variant_t((long)1), COleVariant(_T("1.1 曳引力计算参数表")));//写入
 	font = range.get_Font();
-	//font.put_Name(_variant_t("黑体"));
+	font.put_Name(_variant_t("黑体"));
 	font.put_Size(COleVariant(_T("12")));
 	//五到三十四行
 	range.AttachDispatch(sheet.get_Cells(), TRUE);//加载所有单元格   
@@ -993,8 +1107,17 @@ void CTraction::OnBnClickedExport()
 	font = range.get_Font();
 	//font.put_Name(_variant_t("黑体"));
 	font.put_Size(COleVariant(_T("11")));
-	range.AttachDispatch(sheet.get_Range(_variant_t("E5"), _variant_t("E34")), TRUE);
-	range2.put_HorizontalAlignment(_variant_t((long)-4108));//居中
+	range.AttachDispatch(sheet.get_Range(_variant_t("E5"), _variant_t("E112")), TRUE);
+	range.put_HorizontalAlignment(_variant_t((long)-4108));//居中
+	range.AttachDispatch(sheet.get_Range(_variant_t("G43"), _variant_t("G107")), TRUE);
+	range.put_HorizontalAlignment(_variant_t((long)-4108));//居中
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	//font.put_Size(COleVariant(_T("11")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("B40"), _variant_t("D112")), TRUE);
+	range.put_HorizontalAlignment(_variant_t((long)-4152));//右对齐
+
+
 	range.AttachDispatch(sheet.get_Range(_variant_t("C5"), _variant_t("D5")), TRUE);
 	range.Merge(_variant_t((long)0));
 	range.AttachDispatch(sheet.get_Range(_variant_t("C9"), _variant_t("D9")), TRUE);
@@ -1064,14 +1187,35 @@ void CTraction::OnBnClickedExport()
 		}
 		for (auto k = 0; k < 3; ++k)
 		{
-			range.put_Item(COleVariant((long)ivec1[i] + k), COleVariant((long)5), COleVariant(dvec1[i*3+k]));
+			range.put_Item(COleVariant((long)ivec1[i] + k), COleVariant((long)5), COleVariant(StringFormat(dvec1[i * 3 + k])));
 		}
 		range.put_Item(COleVariant((long)ivec1[i] + 3), COleVariant((long)7), COleVariant(svec5[i]));
 		range.put_Item(COleVariant((long)ivec1[i] + 3), COleVariant((long)6), COleVariant(_T("ef1α")));
 		range.put_Item(COleVariant((long)ivec1[i] + 3), COleVariant((long)5), COleVariant((svec5[i]=="通过")?_T("<"):_T(">")));
 	}
+	range.put_Item(COleVariant((long)77), COleVariant((long)5), COleVariant((m_res31 == "通过") ? _T(">") : _T("<")));
+	range.put_Item(COleVariant((long)82), COleVariant((long)5), COleVariant((m_res32 == "通过") ? _T(">") : _T("<")));
 	
-	
+	range.put_Item(COleVariant((long)40), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)41), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)45), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)46), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)52), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)53), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)57), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)58), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)62), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)63), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)67), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)68), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)74), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)75), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)79), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)80), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)97), COleVariant((long)6), COleVariant(_T("N")));
+	range.put_Item(COleVariant((long)88), COleVariant((long)6), COleVariant(_T("mm")));
+	range.put_Item(COleVariant((long)89), COleVariant((long)6), COleVariant(_T("mm")));
+	range.put_Item(COleVariant((long)91), COleVariant((long)6), COleVariant(_T("KN")));
 
 	range.put_Item(COleVariant((long)38), COleVariant((long)1), COleVariant(_T("1.2 轿厢装载工况")));
 	range.put_Item(COleVariant((long)39), COleVariant((long)1), COleVariant(_T("1.2.1 装有125%额定载重量的轿厢位于最底层时")));
@@ -1094,18 +1238,18 @@ void CTraction::OnBnClickedExport()
 	range.put_Item(COleVariant((long)105), COleVariant((long)1), COleVariant(_T("3.2 实际比压p，曳引轮槽型为带切口的半圆槽")));
 	range.put_Item(COleVariant((long)109), COleVariant((long)1), COleVariant(_T("四、计算结果汇总")));
 
-	CString s_ns;
+	//CString s_ns;
 	s_ns.Format(_T("%d"), m_ns);
-	vector<CString> svec5 = { _T("计算轿厢侧或对重侧"), _T("滑轮的等效数量Nequiv"), _T("曳引轮直径Dt"), _T("曳引绳直径dr"), _T("曳引绳数量ns"), _T("曳引绳最小破断载荷dr"), _T("曳引轮绳径比Dt/dr"), _T("曳引钢丝绳最小安全系数Sf") },
+	vector<CString> svec8 = { _T("计算轿厢侧或对重侧"), _T("滑轮的等效数量Nequiv"), _T("曳引轮直径Dt"), _T("曳引绳直径dr"), _T("曳引绳数量ns"), _T("曳引绳最小破断载荷dr"), _T("曳引轮绳径比Dt/dr"), _T("曳引钢丝绳最小安全系数Sf") },
 		svec6 = { strSel, StringFormat(m_ne), StringFormat(m_dt), StringFormat(m_dr), s_ns, StringFormat(m_ddr), StringFormat(m_dtdr), StringFormat(m_sf) },
 		svec7 = { _T(""), _T(""), _T("mm"), _T("mm"), _T(""), _T("kN"), _T(""), _T("") };
 	for (auto i = 0; i < svec5.size(); ++i)
 	{
-		range.put_Item(COleVariant((long)86+i), COleVariant((long)4), COleVariant(svec5[i]));
+		range.put_Item(COleVariant((long)86+i), COleVariant((long)4), COleVariant(svec8[i]));
 		range.put_Item(COleVariant((long)86 + i), COleVariant((long)5), COleVariant(svec6[i]));
 	}
 	range.put_Item(COleVariant((long)97), COleVariant((long)4), COleVariant(_T("T=")));
-	range.put_Item(COleVariant((long)99), COleVariant((long)4), COleVariant(_T("TSa=ns×dr/T==")));
+	range.put_Item(COleVariant((long)99), COleVariant((long)4), COleVariant(_T("TSa=ns×dr/T=")));
 	range.put_Item(COleVariant((long)100), COleVariant((long)4), COleVariant(_T("Sf")));
 	range.put_Item(COleVariant((long)104), COleVariant((long)4), COleVariant(_T("pmax=")));
 	range.put_Item(COleVariant((long)106), COleVariant((long)4), COleVariant(_T("p=")));
@@ -1124,6 +1268,10 @@ void CTraction::OnBnClickedExport()
 	range.put_Item(COleVariant((long)111), COleVariant((long)5), COleVariant(_T("曳引绳安全系数：")));
 	range.put_Item(COleVariant((long)112), COleVariant((long)5), COleVariant(_T("曳引绳比压：")));
 
+	range.put_Item(COleVariant((long)100), COleVariant((long)6), COleVariant(_T("Sa")));
+	range.put_Item(COleVariant((long)100), COleVariant((long)7), COleVariant((m_safeRes)));
+	range.put_Item(COleVariant((long)107), COleVariant((long)6), COleVariant(_T("pmax")));
+	range.put_Item(COleVariant((long)107), COleVariant((long)7), COleVariant((m_res43)));
 
 	range = sheet.get_Range(COleVariant(_T("E110")), COleVariant(_T("E110")));
 	range.put_Formula(COleVariant(_T("=IF(COUNTIF(G40:G82,\"通过\")=8,\"通过\",\"不通过\")")));
@@ -1131,8 +1279,147 @@ void CTraction::OnBnClickedExport()
 	range.put_Formula(COleVariant(_T("=G100")));
 	range = sheet.get_Range(COleVariant(_T("E112")), COleVariant(_T("E112")));
 	range.put_Formula(COleVariant(_T("=G107")));
-	app.put_Visible(TRUE);
-	app.put_UserControl(TRUE);
+
+	range.AttachDispatch(sheet.get_Range(_variant_t("C42"), _variant_t("D42")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C47"), _variant_t("D47")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C54"), _variant_t("D54")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C59"), _variant_t("D59")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C64"), _variant_t("D64")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C69"), _variant_t("D69")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C76"), _variant_t("D76")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C81"), _variant_t("D81")), TRUE);
+	range.Merge(_variant_t((long)0));
+
+	range.AttachDispatch(sheet.get_Range(_variant_t("C86"), _variant_t("D86")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("B87"), _variant_t("D87")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C88"), _variant_t("D88")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C89"), _variant_t("D89")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C90"), _variant_t("D90")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C91"), _variant_t("D91")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C92"), _variant_t("D92")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("B93"), _variant_t("D93")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C99"), _variant_t("D99")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C111"), _variant_t("D111")), TRUE);
+	range.Merge(_variant_t((long)0));
+	range.AttachDispatch(sheet.get_Range(_variant_t("C112"), _variant_t("D112")), TRUE);
+	range.Merge(_variant_t((long)0));
+
+	//设置字体格式
+	range.AttachDispatch(sheet.get_Range(_variant_t("B5"), _variant_t("D34")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	//font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A38"), _variant_t("B38")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A39"), _variant_t("E39")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A44"), _variant_t("E44")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A50"), _variant_t("B50")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A51"), _variant_t("E51")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A51"), _variant_t("E51")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A56"), _variant_t("E56")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A61"), _variant_t("E61")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A66"), _variant_t("E66")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A72"), _variant_t("B72")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A73"), _variant_t("F73")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A78"), _variant_t("D78")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A84"), _variant_t("C84")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A85"), _variant_t("D85")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A95"), _variant_t("D95")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A96"), _variant_t("G96")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A98"), _variant_t("C98")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A102"), _variant_t("D102")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A103"), _variant_t("E103")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A105"), _variant_t("E105")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	range.AttachDispatch(sheet.get_Range(_variant_t("A109"), _variant_t("E112")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	font.put_Size(COleVariant(_T("12")));
+	range.AttachDispatch(sheet.get_Range(_variant_t("B86"), _variant_t("D93")), TRUE);
+	font = range.get_Font();
+	font.put_Name(_variant_t("黑体"));
+	//app.put_Visible(TRUE);
+	//app.put_UserControl(TRUE);
+	book.SaveAs(COleVariant(strPath), covOptional,
+		covOptional, covOptional,
+		covOptional, covOptional, (long)0,
+		covOptional, covOptional, covOptional,
+		covOptional, covOptional); //与的不同，是个参数的，直接在后面加了两个covOptional成功了 
+	//释放对象（相当重要！）   
+	range.ReleaseDispatch();
+	range2.ReleaseDispatch();
+	sheet.ReleaseDispatch();
+	sheets.ReleaseDispatch();
+	book.ReleaseDispatch();
+	books.ReleaseDispatch();
+	font.ReleaseDispatch();
+	font2.ReleaseDispatch();
+	//退出程序   
+	app.Quit();
+	//m_ExlApp一定要释放，否则程序结束后还会有一个Excel进程驻留在内存中，而且程序重复运行的时候会出错   
+	app.ReleaseDispatch();
+	MessageBox(_T("导出成功！"));
 }
 
 CString CTraction::StringFormat(double m_aa)
