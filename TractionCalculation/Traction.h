@@ -190,4 +190,7 @@ public:
 	CRange cols;
 	LPDISPATCH lpDisp;
 	CString StringFormat(double m_aa);
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	vector<int> cvec1;
+	vector<CString> cvec2;
 };

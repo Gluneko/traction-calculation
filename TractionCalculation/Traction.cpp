@@ -330,6 +330,7 @@ BEGIN_MESSAGE_MAP(CTraction, CDialogEx)
 	ON_EN_CHANGE(IDC_H, &CTraction::OnEnChangeH)
 	ON_EN_SETFOCUS(IDC_MC1, &CTraction::OnEnSetfocusMc1)
 	ON_BN_CLICKED(IDC_EXPORT, &CTraction::OnBnClickedExport)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -491,6 +492,9 @@ BOOL CTraction::OnInitDialog()
 	m_sel.AddString(_T("对重侧"));
 	m_sel.SetCurSel(0);
 	//SetDlgItemText(IDC_SCTYPE, _T("半圆槽"));
+	cvec1 = { IDC_RESULT, IDC_ROS_RES, IDC_P_RES, IDC_SAFE_RES ,IDC_RES11, IDC_RES12, IDC_RES13, IDC_RES14, IDC_RES15, 
+	IDC_RES16, IDC_RES17, IDC_RES18, IDC_RES19, IDC_RES20 };
+	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -530,11 +534,13 @@ void CTraction::OnBnClickedQc()
 {
 	// TODO: Add your control notification handler code here
 	
-	CCompensationChain dlg;
+	CCompensationChain dlg(m_qc);
 	if (IDOK == dlg.DoModal())
 	{
-		SetDlgItemText(IDC_QC, dlg.qc);
-		m_qc = _tstof(dlg.qc.GetBuffer());
+		m_qc = dlg.m_qc;
+		CString qc;
+		qc.Format(_T("%.2f"), m_qc);
+		SetDlgItemText(IDC_QC, qc);
 	}
 }
 
@@ -563,13 +569,16 @@ void CTraction::OnBnClickedAlpha()
 void CTraction::OnBnClickedBeta()
 {
 	// TODO: Add your control notification handler code here
-	CGroove dlg(strWeb);
+	CGroove dlg(m_beta, m_gama);
 	if (IDOK == dlg.DoModal())
 	{
-		SetDlgItemText(IDC_BETA, dlg.beta);
-		m_beta = _tstof(dlg.beta.GetBuffer());
-		SetDlgItemText(IDC_GAMA, dlg.gama);
-		m_gama = _tstof(dlg.gama.GetBuffer());
+		m_beta = dlg.m_beta;
+		m_gama = dlg.m_gama;
+		CString beta, gama;
+		beta.Format(_T("%.1f"), m_beta);
+		gama.Format(_T("%.1f"), m_gama);
+		SetDlgItemText(IDC_BETA, beta);
+		SetDlgItemText(IDC_GAMA, gama);
 		if ((strWeb == "半圆槽"&&m_gama < 25) || (strWeb == "V形槽"&&m_gama < 35))
 		{
 			SetDlgItemText(IDC_STATIC_GAMA, _T("超出规定"));
@@ -586,7 +595,7 @@ void CTraction::OnBnClickedBeta()
 void CTraction::OnBnClickedGama()
 {
 	// TODO: Add your control notification handler code here
-	CGroove dlg(strWeb);
+	CGroove dlg(m_beta,m_gama);
 	if (IDOK == dlg.DoModal())
 	{
 		SetDlgItemText(IDC_BETA, dlg.beta);
@@ -705,8 +714,8 @@ void CTraction::OnBnClickedBtnCalc()
 	m_res32 = (m_t1dt232 >= m_ef3) ? "通过" : "不通过";
 	m_res41 = m_safeRes = (m_sa >= m_sf) ? "通过" : "不通过";
 	m_res43 = (m_sa <= m_p4) ? "通过" : "不通过";
-	m_ropeRes = _T("钢丝绳") + m_res41;
-	m_pRes = _T("比压") + m_res43;
+	m_ropeRes = m_res41;
+	m_pRes = m_res43;
 	vector<CString> vec = { m_res11, m_res12, m_res21, m_res22, m_res23, m_res24, m_res31, m_res32 };
 	m_res = "通过";
 	m_num = 0;
@@ -873,13 +882,20 @@ void CTraction::OnBnClickedDr()
 {
 	// TODO: Add your control notification handler code here
 	
-	CDiameter dlg;
+	CDiameter dlg(m_dr, m_ddr);
 	if (IDOK == dlg.DoModal())
 	{
-		SetDlgItemText(IDC_DR, dlg.m_dr);
+		/*SetDlgItemText(IDC_DR, dlg.m_dr);
 		m_dr = _tstof(dlg.m_dr.GetBuffer());
 		SetDlgItemText(IDC_DR3, dlg.m_ddr);
-		m_ddr = _tstof(dlg.m_ddr.GetBuffer());
+		m_ddr = _tstof(dlg.m_ddr.GetBuffer());*/
+		m_dr = dlg.m_idr;
+		m_ddr = dlg.m_iddr;
+		CString dr, ddr;
+		dr.Format(_T("%.1f"), m_dr);
+		ddr.Format(_T("%.1f"), m_ddr);
+		SetDlgItemText(IDC_DR, dr);
+		SetDlgItemText(IDC_DR3, ddr);
 	}
 	UpdateData(FALSE);
 }
@@ -1428,4 +1444,31 @@ CString CTraction::StringFormat(double m_aa)
 	CString str;
 	str.Format(_T("%.3f"), naa);
 	return str;
+}
+
+
+HBRUSH CTraction::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  Change any attributes of the DC here
+	cvec2 = { m_res, m_ropeRes, m_pRes, m_safeRes, m_res11, m_res12, m_res21, m_res22, m_res23, m_res24, m_res31, m_res32, m_res41, m_res43 };
+	for (auto i = 0; i < cvec1.size(); ++i)
+	{
+		if (cvec1[i] == pWnd->GetDlgCtrlID())
+		{
+			if (cvec2[i] == "通过")
+			{
+				pDC->SetTextColor(RGB(0, 255, 0));
+			}
+			else if (cvec2[i] == "不通过")
+			{
+				pDC->SetTextColor(RGB(255, 0, 0));
+			}
+		}
+	}
+
+	
+	// TODO:  Return a different brush if the default is not desired
+	return hbr;
 }

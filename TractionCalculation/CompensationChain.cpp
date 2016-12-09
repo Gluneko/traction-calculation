@@ -11,8 +11,9 @@ typedef vector<pair<CString, double>>::size_type st;
 
 IMPLEMENT_DYNAMIC(CCompensationChain, CDialogEx)
 
-CCompensationChain::CCompensationChain(CWnd* pParent /*=NULL*/)
+CCompensationChain::CCompensationChain(double q,CWnd* pParent /*=NULL*/)
 	: CDialogEx(CCompensationChain::IDD, pParent)
+	, m_qc(q)
 {
 	vec.push_back(make_pair( _T("WFC050"), 0.88 ));
 	vec.push_back(make_pair(_T("WFB/WFC075"), 1.12));
@@ -36,11 +37,14 @@ void CCompensationChain::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST2, m_ctllist);
+	DDX_Text(pDX, IDC_QC, m_qc);
+	DDV_MinMaxDouble(pDX, m_qc, 0, 1e+30);
 }
 
 
 BEGIN_MESSAGE_MAP(CCompensationChain, CDialogEx)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST2, &CCompensationChain::OnNMDblclkList2)
+	ON_NOTIFY(NM_CLICK, IDC_LIST2, &CCompensationChain::OnNMClickList2)
 END_MESSAGE_MAP()
 
 
@@ -97,10 +101,13 @@ void CCompensationChain::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		// 获取被选择列表项第二个子项的文本   
 		qc = m_ctllist.GetItemText(pNMListView->iItem, 1);
+		m_qc = _tstof(qc.GetBuffer());
+		qc.ReleaseBuffer();
 		CCompensationChain::OnOK();
 		// 将选择的语言显示与编辑框中   
 		//SetDlgItemText(IDC_LANG_SEL_EDIT, strLangName);
 	}
+	UpdateData(FALSE);
 }
 
 
@@ -109,4 +116,24 @@ void CCompensationChain::OnOK()
 	// TODO: Add your specialized code here and/or call the base class
 
 	CDialogEx::OnOK();
+}
+
+
+void CCompensationChain::OnNMClickList2(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
+	NMLISTVIEW *pNMListView = (NMLISTVIEW*)pNMHDR;
+
+	if (-1 != pNMListView->iItem)        // 如果iItem不是-1，就说明有列表项被选择   
+	{
+		// 获取被选择列表项第二个子项的文本   
+		qc = m_ctllist.GetItemText(pNMListView->iItem, 1);
+		m_qc = _tstof(qc.GetBuffer());
+		qc.ReleaseBuffer();
+		// 将选择的语言显示与编辑框中   
+		//SetDlgItemText(IDC_LANG_SEL_EDIT, strLangName);
+	}
+	UpdateData(FALSE);
 }

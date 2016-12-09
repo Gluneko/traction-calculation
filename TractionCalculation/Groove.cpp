@@ -11,9 +11,11 @@
 
 IMPLEMENT_DYNAMIC(CGroove, CDialogEx)
 
-CGroove::CGroove(CString t,CWnd* pParent /*=NULL*/)
+CGroove::CGroove(double b, double g,CWnd* pParent /*=NULL*/)
 	: CDialogEx(CGroove::IDD, pParent)
 	, m_radio(0)
+	, m_beta(b)
+	, m_gama(g)
 {
 	vec1.push_back(make_pair(NumFormat(8), make_pair(90, 30)));
 	vec1.push_back(make_pair(NumFormat(10), make_pair(95, 30)));
@@ -33,7 +35,6 @@ CGroove::CGroove(CString t,CWnd* pParent /*=NULL*/)
 	vec.push_back(vec1);
 	vec.push_back(vec2);
 	vec.push_back(vec3);
-	type = t;
 }
 
 CGroove::~CGroove()
@@ -45,6 +46,10 @@ void CGroove::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Radio(pDX, IDC_RADIO1, m_radio);
 	DDX_Control(pDX, IDC_LIST2, m_ctllist);
+	DDX_Text(pDX, IDC_BETA, m_beta);
+	DDV_MinMaxDouble(pDX, m_beta, 0, 1e+30);
+	DDX_Text(pDX, IDC_GAMA, m_gama);
+	DDV_MinMaxDouble(pDX, m_gama, 0, 1e+30);
 }
 
 
@@ -53,6 +58,7 @@ BEGIN_MESSAGE_MAP(CGroove, CDialogEx)
 	ON_BN_CLICKED(IDC_RADIO2, &CGroove::OnBnClickedRadio1)
 	ON_BN_CLICKED(IDC_RADIO3, &CGroove::OnBnClickedRadio1)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST2, &CGroove::OnNMDblclkList2)
+	ON_NOTIFY(NM_CLICK, IDC_LIST2, &CGroove::OnNMClickList2)
 END_MESSAGE_MAP()
 
 
@@ -130,6 +136,7 @@ void CGroove::OnBnClickedRadio1()
 
 void CGroove::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	UpdateData(TRUE);
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: Add your control notification handler code here
 	*pResult = 0;
@@ -145,8 +152,38 @@ void CGroove::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			MessageBox(_T("超出规定！"), _T("提示"), MB_ICONINFORMATION);
 		}*/
-			CGroove::OnOK();
+		m_beta = _tstof(beta.GetBuffer());
+		m_gama = _tstof(gama.GetBuffer());
+		CGroove::OnOK();
 		// 将选择的语言显示与编辑框中   
 		//SetDlgItemText(IDC_LANG_SEL_EDIT, strLangName);
 	}
+	UpdateData(FALSE);
+}
+
+
+void CGroove::OnNMClickList2(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	UpdateData(TRUE);
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
+	NMLISTVIEW *pNMListView = (NMLISTVIEW*)pNMHDR;
+
+	if (-1 != pNMListView->iItem)        // 如果iItem不是-1，就说明有列表项被选择   
+	{
+		// 获取被选择列表项第二个子项的文本   
+		beta = m_ctllist.GetItemText(pNMListView->iItem, 1);
+		gama = m_ctllist.GetItemText(pNMListView->iItem, 2);
+		/*double gama_n = _tstof(gama.GetBuffer());
+		if ((type == "半圆槽"&&gama_n < 25) || (type == "V形槽"&&gama_n < 35))
+		{
+		MessageBox(_T("超出规定！"), _T("提示"), MB_ICONINFORMATION);
+		}*/
+		m_beta = _tstof(beta.GetBuffer());
+		m_gama = _tstof(gama.GetBuffer());
+		// 将选择的语言显示与编辑框中   
+		//SetDlgItemText(IDC_LANG_SEL_EDIT, strLangName);
+	}
+	UpdateData(FALSE);
 }

@@ -1,28 +1,14 @@
-﻿Build started 2016/12/6 14:48:04.
+﻿Build started 2016/12/9 16:34:59.
      1>Project "E:\projects\TractionCalculation\TractionCalculation\TractionCalculation.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\TractionCalculation.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\TractionCalculation.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt CompensationChain.cpp Diameter.cpp Groove.cpp SafetyFactor.cpp StartingTorque.cpp TestDlg.cpp Traction.cpp TractionCalculation.cpp TractionCalculationDlg.cpp WrapAngle.cpp
-         WrapAngle.cpp
-         TractionCalculationDlg.cpp
-         TractionCalculation.cpp
-     1>e:\projects\tractioncalculation\tractioncalculation\tractioncalculation.cpp(113): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\TractionCalculation.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Traction.cpp
          Traction.cpp
-     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(713): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(798): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(1182): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(1246): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(1426): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-         TestDlg.cpp
-         StartingTorque.cpp
-         SafetyFactor.cpp
-         Groove.cpp
-         Diameter.cpp
-         CompensationChain.cpp
-         Generating Code...
-       ResourceCompile:
-         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D _DEBUG /D _UNICODE /D UNICODE /l"0x0804" /IDebug\ /nologo /fo"Debug\TractionCalculation.res" TractionCalculation.rc 
+     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(722): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(807): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(1198): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(1262): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(1443): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>e:\projects\tractioncalculation\tractioncalculation\traction.cpp(1456): warning C4018: '<' : signed/unsigned mismatch
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\projects\TractionCalculation\Debug\TractionCalculation.exe" /INCREMENTAL /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"E:\projects\TractionCalculation\Debug\TractionCalculation.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\projects\TractionCalculation\Debug\TractionCalculation.lib" /MACHINE:X86 Debug\TractionCalculation.res
          Debug\CompensationChain.obj
@@ -41,4 +27,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:35.82
+Time Elapsed 00:00:12.42

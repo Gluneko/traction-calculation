@@ -10,7 +10,7 @@ class CDiameter : public CDialogEx
 	DECLARE_DYNAMIC(CDiameter)
 
 public:
-	CDiameter(CWnd* pParent = NULL);   // standard constructor
+	CDiameter(double dr, double ddr, CWnd* pParent = NULL);   // standard constructor
 	virtual ~CDiameter();
 	vector<vector<double>> vec2;
 	vector<CString> vec0;
@@ -27,4 +27,9 @@ public:
 	CListCtrl m_ctllist;
 	afx_msg void OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedOk();
+	double m_idr;
+	double m_iddr;
+	afx_msg void OnNMClickList2(NMHDR *pNMHDR, LRESULT *pResult);
+
 };

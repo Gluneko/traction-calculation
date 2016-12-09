@@ -33,4 +33,5 @@ public:
 	afx_msg void OnCbnSelchangeWay();
 	CString strWay;
 	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedCalc();
 };

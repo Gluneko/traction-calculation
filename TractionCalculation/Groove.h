@@ -11,7 +11,7 @@ class CGroove : public CDialogEx
 	DECLARE_DYNAMIC(CGroove)
 
 public:
-	CGroove(CString t,CWnd* pParent = NULL);   // standard constructor
+	CGroove(double b,double g,CWnd* pParent = NULL);   // standard constructor
 	virtual ~CGroove();
 
 // Dialog Data
@@ -23,7 +23,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	int m_radio;
-	CString beta, gama,type;
+	CString beta, gama; 
 	CListCtrl m_ctllist;
 	vector<pair<CString, pair<double, double>>> vec1,vec2,vec3;
 	vector<cdd> vec;
@@ -32,4 +32,7 @@ public:
 	afx_msg void OnBnClickedRadio1();
 	void Insert(int n);
 	afx_msg void OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult);
+	double m_beta;
+	double m_gama;
+	afx_msg void OnNMClickList2(NMHDR *pNMHDR, LRESULT *pResult);
 };

@@ -52,6 +52,7 @@ BEGIN_MESSAGE_MAP(CWrapAngle, CDialogEx)
 	ON_BN_CLICKED(IDC_RADIO2, &CWrapAngle::OnBnClickedRadio1)
 	ON_CBN_SELCHANGE(IDC_WAY, &CWrapAngle::OnCbnSelchangeWay)
 	ON_BN_CLICKED(IDOK, &CWrapAngle::OnBnClickedOk)
+	ON_BN_CLICKED(ID_CALC, &CWrapAngle::OnBnClickedCalc)
 END_MESSAGE_MAP()
 
 
@@ -102,6 +103,13 @@ void CWrapAngle::OnCbnSelchangeWay()
 void CWrapAngle::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
+	CDialogEx::OnOK();
+}
+
+
+void CWrapAngle::OnBnClickedCalc()
+{
+	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
 	if (m_radio1 == 0)
 	{
@@ -133,5 +141,4 @@ void CWrapAngle::OnBnClickedOk()
 	m_alpha2 = m_alpha1*pi / 180;
 	NumFormat(m_alpha1);
 	UpdateData(FALSE);
-	CDialogEx::OnOK();
 }

@@ -12,8 +12,10 @@ typedef vector<double>::size_type st2;
 
 IMPLEMENT_DYNAMIC(CDiameter, CDialogEx)
 
-CDiameter::CDiameter(CWnd* pParent /*=NULL*/)
+CDiameter::CDiameter(double dr, double ddr, CWnd* pParent /*=NULL*/)
 	: CDialogEx(CDiameter::IDD, pParent)
+	, m_idr(dr)
+	, m_iddr(ddr)
 {
 	vec1.push_back(_T("钢丝绳直径(mm)"));
 	vec1.push_back(_T("   单位重   "));
@@ -70,11 +72,15 @@ void CDiameter::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST2, m_ctllist);
+	DDX_Text(pDX, IDC_DR, m_idr);
+	DDX_Text(pDX, IDC_DR4, m_iddr);
 }
 
 
 BEGIN_MESSAGE_MAP(CDiameter, CDialogEx)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST2, &CDiameter::OnNMDblclkList2)
+	ON_BN_CLICKED(IDOK, &CDiameter::OnBnClickedOk)
+	ON_NOTIFY(NM_CLICK, IDC_LIST2, &CDiameter::OnNMClickList2)
 END_MESSAGE_MAP()
 
 
@@ -88,13 +94,19 @@ void CDiameter::OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 	NMLISTVIEW *pNMListView = (NMLISTVIEW*)pNMHDR;
 
-	if (pNMListView->iItem != -1 && pNMListView->iSubItem>0)        // 如果iItem不是-1，就说明有列表项被选择   
+	if (pNMListView->iItem != -1 && pNMListView->iSubItem>1)        // 如果iItem不是-1，就说明有列表项被选择   
 	{
 		// 获取被选择列表项子项的文本   
 		m_ddr = m_ctllist.GetItemText(pNMListView->iItem, pNMListView->iSubItem);
 		if (m_ddr != "")
 		{
 			m_dr = m_ctllist.GetItemText(pNMListView->iItem,0);
+			CString str;
+			m_iddr = _tstof(m_ddr.GetBuffer());
+			m_ddr.ReleaseBuffer();
+			str = (pNMListView->iItem > 11) ? m_dr.Mid(1) : m_dr;//处理有中文情况
+			m_idr = _tstof(str.GetBuffer());
+			str.ReleaseBuffer();
 			CDiameter::OnOK();
 		}
 	}
@@ -145,3 +157,38 @@ BOOL CDiameter::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
+
+
+void CDiameter::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+	CDialogEx::OnOK();
+}
+
+
+void CDiameter::OnNMClickList2(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
+	NMLISTVIEW *pNMListView = (NMLISTVIEW*)pNMHDR;
+	if (pNMListView->iItem != -1 && pNMListView->iSubItem>1)        // 如果iItem不是-1，就说明有列表项被选择   
+	{
+		// 获取被选择列表项子项的文本   
+		m_ddr = m_ctllist.GetItemText(pNMListView->iItem, pNMListView->iSubItem);
+		if (m_ddr != "")
+		{
+			
+			m_dr = m_ctllist.GetItemText(pNMListView->iItem, 0);
+			CString str;
+			m_iddr = _tstof(m_ddr.GetBuffer());
+			m_ddr.ReleaseBuffer();
+			str = (pNMListView->iItem > 11) ? m_dr.Mid(1) : m_dr;//处理有中文情况
+			m_idr = _tstof(str.GetBuffer());
+			str.ReleaseBuffer();
+		}
+	}
+	UpdateData(FALSE);
+}
+
+

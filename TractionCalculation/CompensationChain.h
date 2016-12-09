@@ -9,7 +9,7 @@ class CCompensationChain : public CDialogEx
 	DECLARE_DYNAMIC(CCompensationChain)
 
 public:
-	CCompensationChain(CWnd* pParent = NULL);   // standard constructor
+	CCompensationChain(double q,CWnd* pParent = NULL);   // standard constructor
 	virtual ~CCompensationChain();
 
 // Dialog Data
@@ -26,4 +26,6 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void OnOK();
+	double m_qc;
+	afx_msg void OnNMClickList2(NMHDR *pNMHDR, LRESULT *pResult);
 };
