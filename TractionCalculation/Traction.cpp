@@ -591,7 +591,105 @@ void CTraction::OnBnClickedBeta()
 	UpdateData(FALSE);
 }
 
+bool CTraction::Catchept(){
+	__try
+	{
+		/*************************************公式计算区************************************/
+		m_dr2 = m_dr;
+		m_ns2 = m_ns;
+		double r_beta = m_beta * pi / 180;
+		double r_gama = m_gama * pi / 180;
+		double r_alpha = m_alpha * pi / 180;
+		m_miu2 = 0.1 / (1 + m_r*m_v / 10.0);
+		if (strWeb == "半圆槽")
+		{
+			m_f1 = m_miu1 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
+			m_f2 = m_miu2 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
+			m_f3 = m_miu3 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
+		}
+		else if (strWeb == "V形槽")
+		{
+			m_f1 = (strPro == "硬化处理") ? (m_miu1 / sin(r_gama / 2)) : 4 * m_miu1*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+			m_f2 = (strPro == "硬化处理") ? (m_miu2 / sin(r_gama / 2)) : 4 * m_miu2*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+			m_f3 = (strPro == "硬化处理") ? (m_miu3 / sin(r_gama / 2)) : 4 * m_miu3*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+		}
+		else
+		{
+			m_f1 = 0;
+			m_f2 = 0;
+			m_f3 = 0;
+		}
 
+		m_ef1 = exp(m_f1*r_alpha);
+		m_ef2 = exp(m_f2*r_alpha);
+		m_ef3 = exp(m_f3*r_alpha);
+		m_mmdp = 0.6*m_mdp;
+		m_mmpcar = m_npcar*0.6*m_mpcar;
+		m_mmpcwt = m_npcwt*0.6*m_mpcwt;
+		m_mmptd = m_nptd*0.6*m_mptd;
+		m_dtdr = m_dt / m_dr;
+		double tmp1 = pow(10, 2.6834 - log10(695.85 * 1000000 * m_ne / pow(m_dtdr, 8.567)) / log10(77.09*pow(m_dtdr, -2.894)));
+		m_sf = max(tmp1, m_beta == 2 ? 16 : 12);
+
+		m_qt = m_h > 80 ? 1.0943 : 0.8513;
+		m_rope = m_ns*m_r*m_qs*m_h;
+		m_chain = m_nc*m_qc*m_h;
+		m_cable = m_nt*m_qt*m_h / 2;
+
+		m_t11 = ((m_p + 1.25*m_q + m_mc / 2) / m_r + m_qs*m_ns*m_h)*m_gn;
+		m_t21 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_mc / 2 + m_qtcwt*m_h / 2) / m_r*m_gn;
+		m_t112 = (m_p + 1.25*m_q + m_mc / 2 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*m_gn;
+		m_t212 = ((m_p + m_psi*m_q + m_mc / 2) / m_r + m_ns*m_qs*m_h)*m_gn;
+		m_t121 = (m_p + m_q) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r > 1 ? m_mpcar : 0))*m_a;
+		m_t221 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r > 1 ? m_mpcwt : 0))*m_a;
+		m_t122 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
+		m_t222 = (m_p + m_psi*m_q) / m_r*(m_gn + m_a) + m_ns*m_qs*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn + ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r > 1 ? m_mpcwt : 0))*m_a;
+		m_t123 = (m_p + m_q + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
+		m_t223 = (m_p + m_psi*m_q) / m_r*(m_gn - m_a) + m_ns*m_qs*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn - ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r > 1 ? m_mpcwt : 0))*m_a;
+		m_t124 = (m_p + 0) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) - ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r > 1 ? m_mpcar : 0))*m_a;
+		m_t224 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r > 1 ? m_mpcwt : 0))*m_a;
+		m_t131 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2 + m_mc / 2) / m_r*m_gn;
+		m_t231 = m_ns*m_qs*m_h*m_gn;
+		m_t132 = m_ns*m_qs*m_h*m_gn;
+		m_t232 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_mc / 2 + m_qtcwt*m_h / 2) / m_r*m_gn;
+		m_t141 = ((m_p + m_q + m_mc / 2) / m_r + m_qs*m_ns*m_h)*m_gn;
+		m_t242 = ((m_p + m_psi*m_q + m_mc / 2) / m_r + m_ns*m_qs*m_h)*m_gn;
+		m_p4 = 4 + 8.5 / (1 + m_r*m_v);
+		m_t1dt21 = max(m_t11, m_t21) / min(m_t11, m_t21);
+		m_t1mt21 = abs(m_t11 - m_t21);
+		m_t1dt212 = max(m_t112, m_t212) / min(m_t112, m_t212);
+		m_t1mt212 = abs(m_t112 - m_t212);
+		m_t1dt221 = max(m_t121, m_t221) / min(m_t121, m_t221);
+		m_t1mt221 = abs(m_t121 - m_t221);
+		m_t1dt222 = max(m_t122, m_t222) / min(m_t122, m_t222);
+		m_t1mt222 = abs(m_t122 - m_t222);
+		m_t1dt223 = max(m_t123, m_t223) / min(m_t123, m_t223);
+		m_t1mt223 = abs(m_t123 - m_t223);
+		m_t1dt224 = max(m_t124, m_t224) / min(m_t124, m_t224);
+		m_t1mt224 = abs(m_t124 - m_t224);
+		m_t1dt231 = max(m_t131, m_t231) / min(m_t131, m_t231);
+		m_t1mt231 = abs(m_t131 - m_t231);
+		m_t1dt232 = max(m_t132, m_t232) / min(m_t132, m_t232);
+		m_t1mt232 = abs(m_t132 - m_t232);
+		m_fmax = (m_alpha > 180 ? 2 : 1)*max(m_t11 + m_t21, m_t112 + m_t212) / m_gn;
+		m_pp = m_t141 / (m_ns*m_ddr*m_dt)*((strWeb == "V形槽") && (r_beta == 0) ? 4.5 / sin(r_gama / 2) : 8 * cos(r_beta / 2) / (pi - r_beta - sin(r_beta)));
+		m_sa = m_ns*m_ddr * 1000 / m_t141;
+
+		m_mc1 = m_ns*m_qs*m_r - m_nt*m_qt / 4;
+		m_mc2 = m_qc*m_nc / m_nc;
+		d3 = m_qc*m_nc / (m_ns*m_qs*m_r);
+		d4 = m_nc*m_qc / m_mc1;
+		d3 *= 100;
+		d4 *= 100;
+		/******************************************************************************/
+		return true;
+	}
+	__except (1)
+	{
+		MessageBox(_T("除0异常，请检查输入数据！"), _T("警告"), MB_ICONWARNING);
+		return false;
+	}
+}
 void CTraction::OnBnClickedGama()
 {
 	// TODO: Add your control notification handler code here
@@ -611,105 +709,24 @@ void CTraction::OnBnClickedBtnCalc()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
+	if (Catchept() == false)
+		return;
+	/*************************************公式计算区************************************/
 	
-	m_dr2 = m_dr;
-	m_ns2 = m_ns;
-	double r_beta = m_beta * pi / 180;
-	double r_gama = m_gama * pi / 180;
-	double r_alpha = m_alpha * pi / 180;
-	m_miu2 = 0.1 / (1+m_r*m_v/10.0);
-	if (strWeb == "半圆槽")
-	{
-		m_f1 = m_miu1 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi-r_beta-r_gama-sin(r_beta)+sin(r_gama));
-		m_f2 = m_miu2 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
-		m_f3 = m_miu3 * 4 * (cos(r_gama / 2) - sin(r_beta / 2)) / (pi - r_beta - r_gama - sin(r_beta) + sin(r_gama));
-	}
-	else if (strWeb == "V形槽")
-	{
-		m_f1 = (strPro == "硬化处理") ? (m_miu1 / sin(r_gama / 2)) : 4 * m_miu1*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
-		m_f2 = (strPro == "硬化处理") ? (m_miu2 / sin(r_gama / 2)) : 4 * m_miu2*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
-		m_f3 = (strPro == "硬化处理") ? (m_miu3 / sin(r_gama / 2)) : 4 * m_miu3*(1 - sin(r_beta / 2) / (pi - r_beta - sin(r_beta)));
-	}
-	else
-	{
-		m_f1 = 0;
-		m_f2 = 0;
-		m_f3 = 0;
-	}
-	
-	m_ef1 = exp(m_f1*r_alpha);
-	m_ef2 = exp(m_f2*r_alpha);
-	m_ef3 = exp(m_f3*r_alpha);
-	m_mmdp = 0.6*m_mdp;
-	m_mmpcar = m_npcar*0.6*m_mpcar;
-	m_mmpcwt = m_npcwt*0.6*m_mpcwt;
-	m_mmptd = m_nptd*0.6*m_mptd;
-	m_dtdr = m_dt / m_dr;
-	double tmp1 = pow(10, 2.6834 - log10(695.85 * 1000000 * m_ne / pow(m_dtdr,8.567)) / log10(77.09*pow(m_dtdr, -2.894)));
-	m_sf=max(tmp1, m_beta == 2 ? 16 : 12);
-	
-	m_qt = m_h > 80 ? 1.0943 : 0.8513;
-	m_rope = m_ns*m_r*m_qs*m_h;
-	m_chain = m_nc*m_qc*m_h;
-	m_cable = m_nt*m_qt*m_h / 2;
-	
-	m_t11 = ((m_p + 1.25*m_q + m_mc / 2) / m_r + m_qs*m_ns*m_h)*m_gn;
-	m_t21 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_mc / 2 + m_qtcwt*m_h / 2) / m_r*m_gn;
-	m_t112 = (m_p + 1.25*m_q + m_mc / 2 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*m_gn;
-	m_t212 = ((m_p + m_psi*m_q + m_mc / 2) / m_r + m_ns*m_qs*m_h)*m_gn;
-	m_t121 = (m_p + m_q) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcar : 0))*m_a;
-	m_t221 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
-	m_t122 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn - (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
-	m_t222 = (m_p + m_psi*m_q) / m_r*(m_gn + m_a) + m_ns*m_qs*m_h*(m_gn + (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn + ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
-	m_t123 = (m_p + m_q + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + m_mpcar)*m_a;
-	m_t223 = (m_p + m_psi*m_q) / m_r*(m_gn - m_a) + m_ns*m_qs*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) + m_mc / 2 / m_r*m_gn - ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
-	m_t124 = (m_p + 0) / m_r*(m_gn - m_a) + m_mc / 2 / m_r*m_gn + m_qs*m_ns*m_h*(m_gn - (m_r*m_r + 2) / 3 * m_a) - ((strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcar : 0))*m_a;
-	m_t224 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_qtcwt*m_h / 2) / m_r*(m_gn + m_a) + m_mc / 2 / m_r*m_gn + (m_mptd / 2 / m_r + (strSel == "轿厢侧" ? m_mdp*m_r : 0) + (m_r>1 ? m_mpcwt : 0))*m_a;
-	m_t131 = (m_p + 0 + m_nc*m_qc*m_h + m_nt*m_qt*m_h / 2 + m_mc / 2) / m_r*m_gn;
-	m_t231 = m_ns*m_qs*m_h*m_gn;
-	m_t132 = m_ns*m_qs*m_h*m_gn;
-	m_t232 = (m_p + m_psi*m_q + m_qc*m_nc*m_h + m_mc / 2 + m_qtcwt*m_h / 2) / m_r*m_gn;
-	m_t141 = ((m_p + m_q + m_mc / 2) / m_r + m_qs*m_ns*m_h)*m_gn;
-	m_t242 = ((m_p + m_psi*m_q + m_mc / 2) / m_r + m_ns*m_qs*m_h)*m_gn;
-	m_p4 = 4 + 8.5 / (1 + m_r*m_v);
-	m_t1dt21 = max(m_t11, m_t21) / min(m_t11, m_t21);
-	m_t1mt21 = abs(m_t11 - m_t21);
-	m_t1dt212 = max(m_t112, m_t212) / min(m_t112, m_t212);
-	m_t1mt212 = abs(m_t112 - m_t212);
-	m_t1dt221 = max(m_t121, m_t221) / min(m_t121, m_t221);
-	m_t1mt221 = abs(m_t121 - m_t221);
-	m_t1dt222 = max(m_t122, m_t222) / min(m_t122, m_t222);
-	m_t1mt222 = abs(m_t122 - m_t222);
-	m_t1dt223 = max(m_t123, m_t223) / min(m_t123, m_t223);
-	m_t1mt223 = abs(m_t123 - m_t223);
-	m_t1dt224 = max(m_t124, m_t224) / min(m_t124, m_t224);
-	m_t1mt224 = abs(m_t124 - m_t224);
-	m_t1dt231 = max(m_t131, m_t231) / min(m_t131, m_t231);
-	m_t1mt231 = abs(m_t131 - m_t231);
-	m_t1dt232 = max(m_t132, m_t232) / min(m_t132, m_t232);
-	m_t1mt232 = abs(m_t132 - m_t232);
-
-	
-
-	m_fmax = (m_alpha > 180 ? 2 : 1)*max(m_t11 + m_t21, m_t112 + m_t212) / m_gn;
-	m_pp = m_t141 / (m_ns*m_ddr*m_dt)*((strWeb == "V形槽") && (r_beta == 0) ? 4.5 / sin(r_gama / 2) : 8 * cos(r_beta / 2) / (pi - r_beta - sin(r_beta)));
-	m_sa = m_ns*m_ddr * 1000 / m_t141;
 	vector<double> vec1 = { m_t1mt21, m_t1mt212, m_t1mt221, m_t1mt222, m_t1mt223, m_t1mt224 },
 		vec2 = { m_t1mt231, m_t1mt232 };
-	m_t10=MaxAll(vec1)*m_dt / 2 / 1000;
+	m_t10 = MaxAll(vec1)*m_dt / 2 / 1000;
 	m_t20 = MaxAll(vec2)*m_dt / 2 / 1000;
-	m_mc1 = m_ns*m_qs*m_r - m_nt*m_qt / 4;
-	m_mc2 = m_qc*m_nc / m_nc;
-	double d3, d4;
-	d3 = m_qc*m_nc / (m_ns*m_qs*m_r);
-	d4 = m_nc*m_qc / m_mc1;
-
-	m_res11 = (m_t1dt21 <= m_ef1)?"通过":"不通过";
+	m_mc3.Format(_T("%.2f"), d3);
+	m_mc4.Format(_T("%.2f"), d4);
+	m_mc3 += "%";
+	m_mc4 += "%";
+	m_res11 = (m_t1dt21 <= m_ef1) ? "通过" : "不通过";
 	m_res12 = (m_t1dt212 <= m_ef1) ? "通过" : "不通过";
 	m_res21 = (m_t1dt221 <= m_ef2) ? "通过" : "不通过";
 	m_res22 = (m_t1dt222 <= m_ef2) ? "通过" : "不通过";
 	m_res23 = (m_t1dt223 <= m_ef2) ? "通过" : "不通过";
-	m_res24 = (m_t1dt224 <= m_ef2)?"通过":"不通过";
+	m_res24 = (m_t1dt224 <= m_ef2) ? "通过" : "不通过";
 	m_res31 = (m_t1dt231 >= m_ef3) ? "通过" : "不通过";
 	m_res32 = (m_t1dt232 >= m_ef3) ? "通过" : "不通过";
 	m_res41 = m_safeRes = (m_sa >= m_sf) ? "通过" : "不通过";
@@ -727,48 +744,50 @@ void CTraction::OnBnClickedBtnCalc()
 			++m_num;
 		}
 	}
-		NumFormat(m_dr2);
-		NumFormat(m_ns2);
-		NumFormat(m_miu2);
-		NumFormat(m_f1);
-		NumFormat(m_f2);
-		NumFormat(m_f3);
-		NumFormat(m_ef1);
-		NumFormat(m_ef2);
-		NumFormat(m_ef3);
-		NumFormat(m_mmdp);
-		NumFormat(m_mmpcar);
-		NumFormat(m_mmpcwt);
-		NumFormat(m_mmptd);
-		NumFormat(m_dtdr);
-		NumFormat(m_sf);
-		NumFormat(m_qt);
-		NumFormat(m_rope);
-		NumFormat(m_chain);
-		NumFormat(m_cable);
-		NumFormat(m_t11);
-		NumFormat(m_t21);
-		NumFormat(m_t112);
-		NumFormat(m_t212);
-		NumFormat(m_t121);
-		NumFormat(m_t221);
-		NumFormat(m_t122);
-		NumFormat(m_t222);
-		NumFormat(m_t123);
-		NumFormat(m_t223);
-		NumFormat(m_t124);
-		NumFormat(m_t224);
-		NumFormat(m_t131);
-		NumFormat(m_t231);
-		NumFormat(m_t132);
-		NumFormat(m_t232);
-		NumFormat(m_t141);
-		NumFormat(m_t242);
-		NumFormat(m_p4);
-		NumFormat(m_t1dt21);
-		NumFormat(m_t1mt21);
-		NumFormat(m_t1dt212);
-		NumFormat(m_t1mt212);
+
+	/******************************************************************************/
+	NumFormat(m_dr2);
+	NumFormat(m_ns2);
+	NumFormat(m_miu2);
+	NumFormat(m_f1);
+	NumFormat(m_f2);
+	NumFormat(m_f3);
+	NumFormat(m_ef1);
+	NumFormat(m_ef2);
+	NumFormat(m_ef3);
+	NumFormat(m_mmdp);
+	NumFormat(m_mmpcar);
+	NumFormat(m_mmpcwt);
+	NumFormat(m_mmptd);
+	NumFormat(m_dtdr);
+	NumFormat(m_sf);
+	NumFormat(m_qt);
+	NumFormat(m_rope);
+	NumFormat(m_chain);
+	NumFormat(m_cable);
+	NumFormat(m_t11);
+	NumFormat(m_t21);
+	NumFormat(m_t112);
+	NumFormat(m_t212);
+	NumFormat(m_t121);
+	NumFormat(m_t221);
+	NumFormat(m_t122);
+	NumFormat(m_t222);
+	NumFormat(m_t123);
+	NumFormat(m_t223);
+	NumFormat(m_t124);
+	NumFormat(m_t224);
+	NumFormat(m_t131);
+	NumFormat(m_t231);
+	NumFormat(m_t132);
+	NumFormat(m_t232);
+	NumFormat(m_t141);
+	NumFormat(m_t242);
+	NumFormat(m_p4);
+	NumFormat(m_t1dt21);
+	NumFormat(m_t1mt21);
+	NumFormat(m_t1dt212);
+	NumFormat(m_t1mt212);
 	NumFormat(m_t1dt221);
 	NumFormat(m_t1mt221);
 	NumFormat(m_t1dt222);
@@ -790,12 +809,8 @@ void CTraction::OnBnClickedBtnCalc()
 	NumFormat(m_mc2);
 	//NumFormat(m_mc3);
 	//NumFormat(m_mc4);
-	d3 *=100;
-	d4 *=100;
-	m_mc3.Format(_T("%.2f"), d3);
-	m_mc4.Format(_T("%.2f"), d4);
-	m_mc3 += "%";
-	m_mc4 += "%";
+	
+	
 	GetDlgItem(IDC_EXPORT)->EnableWindow(TRUE);
 	OnPaint();
 	UpdateData(FALSE);
@@ -1421,8 +1436,8 @@ void CTraction::OnBnClickedExport()
 		covOptional, covOptional,
 		covOptional, covOptional, (long)0,
 		covOptional, covOptional, covOptional,
-		covOptional, covOptional); //与的不同，是个参数的，直接在后面加了两个covOptional成功了 
-	//释放对象（相当重要！）   
+		covOptional, covOptional); 
+	//释放对象   
 	range.ReleaseDispatch();
 	range2.ReleaseDispatch();
 	sheet.ReleaseDispatch();
@@ -1435,7 +1450,7 @@ void CTraction::OnBnClickedExport()
 	app.Quit();
 	//m_ExlApp一定要释放，否则程序结束后还会有一个Excel进程驻留在内存中，而且程序重复运行的时候会出错   
 	app.ReleaseDispatch();
-	MessageBox(_T("导出成功！"));
+	MessageBox(_T("导出成功！"), _T("提示"), MB_ICONINFORMATION);
 }
 
 CString CTraction::StringFormat(double m_aa)
@@ -1459,7 +1474,7 @@ HBRUSH CTraction::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		{
 			if (cvec2[i] == "通过")
 			{
-				pDC->SetTextColor(RGB(0, 255, 0));
+				pDC->SetTextColor(RGB(0, 150, 0));
 			}
 			else if (cvec2[i] == "不通过")
 			{
